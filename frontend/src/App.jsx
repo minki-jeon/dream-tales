@@ -1,12 +1,7 @@
-function App() {
+import { MainView } from "./MainView.jsx";
 
-  return (
-    <>
-      <div>
-        frontend
-      </div>
-    </>
-  )
+function App() {
+  return <MainView />;
 }
 
-export default App
+export default App;
