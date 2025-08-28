@@ -1,0 +1,639 @@
+/* 초기 로딩 화면 */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #7209b7 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeOut 0.8s ease-in-out 2.2s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.forest-portal {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.portal-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid;
+    animation: portalExpand 2s ease-out forwards;
+}
+
+.portal-ring-1 {
+    width: 80px;
+    height: 80px;
+    border-color: #ffd700;
+    animation-delay: 0s;
+    box-shadow: 0 0 20px #ffd700;
+}
+
+.portal-ring-2 {
+    width: 120px;
+    height: 120px;
+    border-color: #ff69b4;
+    animation-delay: 0.3s;
+    box-shadow: 0 0 25px #ff69b4;
+}
+
+.portal-ring-3 {
+    width: 160px;
+    height: 160px;
+    border-color: #9370db;
+    animation-delay: 0.6s;
+    box-shadow: 0 0 30px #9370db;
+}
+
+@keyframes portalExpand {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 0.8;
+    }
+}
+
+.portal-center {
+    position: relative;
+    text-align: center;
+    z-index: 10;
+    animation: portalGlow 2s ease-in-out infinite;
+}
+
+@keyframes portalGlow {
+    0%, 100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+    }
+}
+
+.magical-sparkles {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+}
+
+.sparkle {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    color: #ffd700;
+    animation: sparkleFloat 2s ease-in-out infinite;
+}
+
+.sparkle-1 {
+    top: 10px;
+    left: 10px;
+    animation-delay: 0s;
+    color: #ffd700;
+}
+
+.sparkle-2 {
+    top: 10px;
+    right: 10px;
+    animation-delay: 0.5s;
+    color: #ff69b4;
+}
+
+.sparkle-3 {
+    bottom: 10px;
+    left: 10px;
+    animation-delay: 1s;
+    color: #9370db;
+}
+
+.sparkle-4 {
+    bottom: 10px;
+    right: 10px;
+    animation-delay: 1.5s;
+    color: #40e0d0;
+}
+
+@keyframes sparkleFloat {
+    0%, 100% {
+        transform: translateY(0px) scale(1) rotate(0deg);
+        opacity: 0.8;
+    }
+    25% {
+        transform: translateY(-10px) scale(1.2) rotate(90deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-20px) scale(0.8) rotate(180deg);
+        opacity: 0.6;
+    }
+    75% {
+        transform: translateY(-10px) scale(1.2) rotate(270deg);
+        opacity: 1;
+    }
+}
+
+.loading-text {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 0;
+    animation: textPulse 2s ease-in-out infinite;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+@keyframes textPulse {
+    0%, 100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+.loading-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #ffd700, transparent);
+    border-radius: 50%;
+    animation: particleFloat 3s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+    }
+}
+
+/* 파티클 개별 위치 및 딜레이 */
+.particle-1 {
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.particle-2 {
+    left: 20%;
+    animation-delay: 0.2s;
+}
+
+.particle-3 {
+    left: 30%;
+    animation-delay: 0.4s;
+}
+
+.particle-4 {
+    left: 40%;
+    animation-delay: 0.6s;
+}
+
+.particle-5 {
+    left: 50%;
+    animation-delay: 0.8s;
+}
+
+.particle-6 {
+    left: 60%;
+    animation-delay: 1s;
+}
+
+.particle-7 {
+    left: 70%;
+    animation-delay: 1.2s;
+}
+
+.particle-8 {
+    left: 80%;
+    animation-delay: 1.4s;
+}
+
+.particle-9 {
+    left: 90%;
+    animation-delay: 1.6s;
+}
+
+.particle-10 {
+    left: 15%;
+    animation-delay: 1.8s;
+}
+
+.particle-11 {
+    left: 25%;
+    animation-delay: 2s;
+}
+
+.particle-12 {
+    left: 35%;
+    animation-delay: 2.2s;
+}
+
+.particle-13 {
+    left: 45%;
+    animation-delay: 2.4s;
+}
+
+.particle-14 {
+    left: 55%;
+    animation-delay: 2.6s;
+}
+
+.particle-15 {
+    left: 65%;
+    animation-delay: 2.8s;
+}
+
+.particle-16 {
+    left: 75%;
+    animation-delay: 3s;
+}
+
+.particle-17 {
+    left: 85%;
+    animation-delay: 3.2s;
+}
+
+.particle-18 {
+    left: 95%;
+    animation-delay: 3.4s;
+}
+
+.particle-19 {
+    left: 5%;
+    animation-delay: 3.6s;
+}
+
+.particle-20 {
+    left: 95%;
+    animation-delay: 3.8s;
+}
+
+/* 메인 앱 화면 전환 */
+.fairy-tale-app.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.fairy-tale-app.visible {
+    opacity: 1;
+    visibility: visible;
+    animation: slideInFromPortal 1s ease-out;
+}
+
+@keyframes slideInFromPortal {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) /*rotate(5deg)*/;
+        filter: blur(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) /*rotate(0deg)*/;
+        filter: blur(0px);
+    }
+}
+
+.fairy-tale-app {
+    min-height: 100vh;
+    position: relative;
+    background-image: url('https://img.freepik.com/free-vector/watercolor-enchanted-forest-illustration_52683-85062.jpg?t=st=1756177931~exp=1756181531~hmac=7a85dbd07530cb4ed1f75e8c84e36ce7722ba2203eb37d932d22b3d2995f9a41&w=1480');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+
+.background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+            135deg,
+            rgba(139, 69, 19, 0.7) 0%,
+            rgba(75, 0, 130, 0.7) 25%,
+            rgba(25, 25, 112, 0.7) 50%,
+            rgba(72, 61, 139, 0.7) 75%,
+            rgba(75, 0, 130, 0.7) 100%
+    );
+    backdrop-filter: blur(2px);
+}
+
+.main-content {
+    position: relative;
+    z-index: 10;
+    padding: 3rem 0;
+}
+
+/* 플로팅 아이콘 애니메이션 */
+.floating-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.floating-icon {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    color: rgba(255, 182, 193, 0.6);
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(-20px);
+        opacity: 1;
+    }
+}
+
+/* 헤더 스타일 */
+.header-section {
+    animation: fadeInUp 1s ease-out;
+}
+
+.header-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 2rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.header-card:hover {
+    transform: scale(1.02);
+}
+
+.header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.spinning-icon {
+    animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.gradient-text {
+    font-size: 3rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ffd700, #ff69b4, #9370db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-pink {
+    color: #ffb6c1;
+}
+
+/* 입력 카드 스타일 */
+.input-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 2rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.input-card:hover {
+    transform: scale(1.02);
+}
+
+.story-input {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem !important;
+    color: white;
+    font-size: 1.1rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.story-input:focus {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 0.25rem rgba(255, 105, 180, 0.25);
+    color: white;
+}
+
+.story-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.generate-btn {
+    background: linear-gradient(45deg, #ff69b4, #9370db);
+    border: none;
+    border-radius: 1rem !important;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 16px rgba(255, 105, 180, 0.3);
+}
+
+.generate-btn:hover:not(:disabled) {
+    background: linear-gradient(45deg, #ff1493, #8a2be2);
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(255, 105, 180, 0.4);
+}
+
+.generate-btn:active {
+    transform: scale(0.98);
+}
+
+.generate-btn:disabled {
+    background: linear-gradient(45deg, #808080, #696969);
+    cursor: not-allowed;
+}
+
+/* 결과 카드 스타일 */
+.result-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 2rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.loading-container {
+    position: relative;
+    display: inline-block;
+}
+
+.loading-spinner {
+    position: relative;
+    display: inline-block;
+}
+
+.loading-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.generated-image {
+    border-radius: 1rem;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.5s ease;
+}
+
+.generated-image:hover {
+    transform: scale(1.05);
+}
+
+.story-text-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.typing-cursor {
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+.restart-btn {
+    background: linear-gradient(45deg, #ffd700, #ffa500);
+    border: none;
+    border-radius: 1rem !important;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 0.8rem 2rem;
+    color: #333;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 16px rgba(255, 215, 0, 0.3);
+}
+
+.restart-btn:hover {
+    background: linear-gradient(45deg, #ffed4e, #ff8c00);
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(255, 215, 0, 0.4);
+    color: #333;
+}
+
+.restart-btn:active {
+    transform: scale(0.98);
+}
+
+/* 애니메이션 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .gradient-text {
+        font-size: 2rem;
+    }
+
+    .header-icon {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .main-content {
+        padding: 2rem 0;
+    }
+
+    .fairy-tale-app {
+        background-attachment: scroll;
+    }
+}
+
+@media (max-width: 576px) {
+    .gradient-text {
+        font-size: 1.5rem;
+    }
+
+    .generate-btn {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+}
