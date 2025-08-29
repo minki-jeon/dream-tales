@@ -23,10 +23,16 @@ public class MainController {
 
     @PostMapping("/create/dalle2")
     public ResponseEntity<Map<String, Object>> generateImage(@RequestBody ImageRequestDto request) {
-//        TODO 1. MOVE TO SEVICE
-//        TODO 2. Translate request.getText()
-//        TODO 3. ADD Initial Prompt
-//        TODO 4. GET Delay-Time
+        /* TODO
+        (1) Service로 구현 소스 이동
+		(2) 입력 텍스트(프롬프트) 영문 번역
+		(3) 기본 프롬프트 설정 (ex. 동화/삽화 이미지에 어울리는)
+		(4) API 호출응답에 소요되는 시간 관리, 평균 시간 화면에 출력
+		(5) Error 처리 (오류코드 별 메시지 출력)
+		(6) Token 사용량 체크/제한 처리
+		(7) 이미지 재생성 및 편집 등 기능 추가
+		(8) 다른 모델 및 AI API 추가 반영
+         */
         try {
             // OpenAI DALL-E API 호출
             String apiUrl = "https://api.openai.com/v1/images/generations";
