@@ -23,7 +23,10 @@ public class MainController {
 
     @PostMapping("/create/dalle2")
     public ResponseEntity<Map<String, Object>> generateImage(@RequestBody ImageRequestDto request) {
-//        TODO MOVE TO SEVICE
+//        TODO 1. MOVE TO SEVICE
+//        TODO 2. Translate request.getText()
+//        TODO 3. ADD Initial Prompt
+//        TODO 4. GET Delay-Time
         try {
             // OpenAI DALL-E API 호출
             String apiUrl = "https://api.openai.com/v1/images/generations";
