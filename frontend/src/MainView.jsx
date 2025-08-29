@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import { Sparkles, Wand2, Book, Stars, Heart, Smile } from "lucide-react";
 import "./css/MainView.css";
+import axios from "axios";
 
 export function MainView() {
   const [inputText, setInputText] = useState("");
@@ -43,6 +44,37 @@ export function MainView() {
         setIsTyping(false);
       }
     }, 50);
+  };
+
+  // 이미지 생성 (backend에서 api 연동)
+  const handleCreateImageClickBtn = async () => {
+    if (!inputText.trim()) return;
+    setIsGenerating(true);
+
+    try {
+      const response = await axios.post("/api/create/dalle2", {
+        text: inputText,
+      });
+      console.log(response.data);
+
+      setTimeout(() => {
+        // 샘플 이미지 URL (실제로는 API 응답)
+        setGeneratedImage(response.data.image_path);
+        setIsGenerating(false);
+
+        // 결과 섹션으로 스크롤
+        setTimeout(() => {
+          resultRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+          // 타이핑 효과 시작
+          setTimeout(() => typeWriterEffect(inputText), 500);
+        }, 100);
+      }, 3000);
+    } catch (err) {
+      console.log("[Error] handleCreateImageClickBtn() : ", err);
+    }
   };
 
   // 이미지 생성 시뮬레이션 (실제 API 연동 시 교체)
@@ -180,7 +212,7 @@ export function MainView() {
                       <Button
                         variant="primary"
                         size="lg"
-                        onClick={handleGenerateImage}
+                        onClick={handleCreateImageClickBtn}
                         disabled={!inputText.trim() || isGenerating}
                         className="w-100 generate-btn"
                       >
