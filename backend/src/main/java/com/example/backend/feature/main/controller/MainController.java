@@ -11,6 +11,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+/**
+ * <pre>
+ * packageName    : com.example.backend.feature.main.controller
+ * fileName       : MainController
+ * author         : minki-jeon
+ * date           : 2025-08-29 (금)
+ * description    : 메인 화면에서 실행되는 기능
+ * ===========================================================
+ * DATE                     AUTHOR           NOTE
+ * -----------------------------------------------------------
+ * 2025-08-29 (금)        minki-jeon       최초 생성
+ * </pre>
+ */
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -18,18 +31,26 @@ public class MainController {
 
     private final CallApiService callApiService;
 
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/08/29 오후 2:51
+     * description    : dall-e-2 모델 이미지 생성
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/08/29 오후 2:51     minki-jeon         최초 생성.
+     * 2025/09/01 오후 6:14     minki-jeon         To Service
+     * </pre>
+     *
+     * @param request Dall-e-2 API 요청 Parameter DTO
+     * @return axios promise
+     * @author minki-jeon
+     * @version 1.0
+     * @since 1.0
+     */
     @PostMapping("/create/dalle2")
     public ResponseEntity<Map<String, Object>> generateImage(@RequestBody ImageRequestDto request) {
-        /* TODO
-        (1) Service로 구현 소스 이동
-		(2) 입력 텍스트(프롬프트) 영문 번역
-		(3) 기본 프롬프트 설정 (ex. 동화/삽화 이미지에 어울리는)
-		(4) API 호출응답에 소요되는 시간 관리, 평균 시간 화면에 출력
-		(5) Error 처리 (오류코드 별 메시지 출력)
-		(6) Token 사용량 체크/제한 처리
-		(7) 이미지 재생성 및 편집 등 기능 추가
-		(8) 다른 모델 및 AI API 추가 반영
-         */
         try {
             String imageUrl = callApiService.createImageOnDallE2(request);
 
