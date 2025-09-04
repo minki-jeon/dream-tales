@@ -52,6 +52,10 @@ public class CallApiService {
      * @since 1.0
      */
     public String createImageOnDallE2(ImageRequestDto request) {
+        String inputText = request.getText();
+        // 입력 텍스트를 영어로 번역
+        String translateText = translateTextToEng(inputText);
+
         // OpenAI DALL-E API 호출
         String apiUrl = "https://api.openai.com/v1/images/generations";
 
@@ -61,7 +65,7 @@ public class CallApiService {
 
         Map<String, Object> requestBody = Map.of(
                 "model", "dall-e-2",
-                "prompt", request.getText(),
+                "prompt", translateText,
                 "n", 1,
                 "size", "1024x1024"
         );
@@ -75,5 +79,52 @@ public class CallApiService {
         List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
 
         return (String) data.get(0).get("url");
+    }
+
+
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/09/04 오후 4:25
+     * description    : 사용자로부터 입력받은 텍스트를 영어로 번역
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/09/04 오후 4:25     minki-jeon         최초 생성.
+     *
+     * </pre>
+     *
+     * @param text 사용자로부터 입력받은 텍스트
+     * @return 번역된 텍스트
+     * @author minki-jeon
+     * @version 1.0
+     * @since 1.0
+     */
+    private String translateTextToEng(String text) {
+        String addPrompt = "내가 제공한 문장을 영어로 번역해서 제공해주세요. 번역된 문장 외에는 응답하지마세요. ";
+        String prompt = addPrompt + "`" + text + "`";
+
+        String apiUrl = "https://api.openai.com/v1/responses";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(openaiApiKey);
+
+        Map<String, Object> requestBody = Map.of(
+                "model", "gpt-4o-mini-2024-07-18",
+                "input", prompt
+        );
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
+
+
+        List<Map<String, Object>> output = (List<Map<String, Object>>) response.getBody().get("output");
+        List<Map<String, Object>> content = (List<Map<String, Object>>) output.get(0).get("content");
+        String result = (String) content.get(0).get("text");
+
+        return result;
     }
 }
