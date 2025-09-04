@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -22,10 +23,11 @@ import java.util.Map;
  * 2025-09-04 (목)        minki-jeon       최초 생성
  * </pre>
  */
+@Component
 public class CallApi {
 
     @Value("${openai.api.key}")
-    private static String openaiApiKey;
+    private String openaiApiKey;
 
     /**
      * <pre>
@@ -36,6 +38,7 @@ public class CallApi {
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
      * 2025/09/04 오후 4:49     minki-jeon         최초 생성.
+     * 2025/09/04 오후 4:49     minki-jeon         apiKey null 오류 처
      *
      * </pre>
      *
@@ -46,7 +49,7 @@ public class CallApi {
      * @version 1.0
      * @since 1.0
      */
-    public static ResponseEntity<Map> callOpenAi(String apiUrl, Map<String, Object> requestBody) {
+    public ResponseEntity<Map> callOpenAi(String apiUrl, Map<String, Object> requestBody) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(openaiApiKey);
@@ -54,6 +57,8 @@ public class CallApi {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        return restTemplate.postForEntity(apiUrl, entity, Map.class);
+        ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
+
+        return response;
     }
 }
