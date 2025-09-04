@@ -1,14 +1,11 @@
 package com.example.backend.feature.main.service;
 
+import com.example.backend.feature.common.CallApi;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -16,19 +13,21 @@ import java.util.Map;
 /**
  * <pre>
  * packageName    : com.example.backend.feature.main.service
- * fileName       : CallApiService
+ * fileName       : MainService
  * author         : minki-jeon
  * date           : 2025-09-01 (월)
  * description    : API 호출 서비스
  * ===========================================================
  * DATE                     AUTHOR           NOTE
  * -----------------------------------------------------------
- * 2025-09-01 (수)        minki-jeon       최초 생성
+ * 2025-09-01 (월)        minki-jeon       최초 생성
+ * 2025-09-04 (목)        minki-jeon       Create Translate Text to English
+ * 2025-09-04 (목)        minki-jeon       Rename CallApiService
  * </pre>
  */
 @Service
 @RequiredArgsConstructor
-public class CallApiService {
+public class MainService {
 
     @Value("${openai.api.key}")
     private String openaiApiKey;
@@ -42,6 +41,7 @@ public class CallApiService {
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
      * 2025/09/01 오후 6:14     minki-jeon         From Controller
+     * 2025/09/04 오후 4:49     minki-jeon         Move to Call Api
      *
      * </pre>
      *
@@ -56,24 +56,24 @@ public class CallApiService {
         // 입력 텍스트를 영어로 번역
         String translateText = translateTextToEng(inputText);
 
+        // TODO RequestBodyDto
+        String model = "dall-e-2";
+        int n = 1;
+        String size = "1024x1024";
+
+        // TODO apiUrl Move to Constant
         // OpenAI DALL-E API 호출
         String apiUrl = "https://api.openai.com/v1/images/generations";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(openaiApiKey);
-
         Map<String, Object> requestBody = Map.of(
-                "model", "dall-e-2",
+                "model", model,
                 "prompt", translateText,
-                "n", 1,
-                "size", "1024x1024"
+                "n", n,
+                "size", size
         );
 
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
+        // Call API openAI
+        ResponseEntity<Map> response = CallApi.callOpenAi(apiUrl, requestBody);
 
         // 이미지 URL 추출
         List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
@@ -91,6 +91,7 @@ public class CallApiService {
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
      * 2025/09/04 오후 4:25     minki-jeon         최초 생성.
+     * 2025/09/04 오후 4:49     minki-jeon         Move to Call Api
      *
      * </pre>
      *
@@ -101,25 +102,20 @@ public class CallApiService {
      * @since 1.0
      */
     private String translateTextToEng(String text) {
+        // TODO RequestBodyDto
         String addPrompt = "내가 제공한 문장을 영어로 번역해서 제공해주세요. 번역된 문장 외에는 응답하지마세요. ";
         String prompt = addPrompt + "`" + text + "`";
+        String model = "gpt-4o-mini-2024-07-18";
 
         String apiUrl = "https://api.openai.com/v1/responses";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(openaiApiKey);
-
         Map<String, Object> requestBody = Map.of(
-                "model", "gpt-4o-mini-2024-07-18",
+                "model", model,
                 "input", prompt
         );
 
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
-
+        // Call API openAI
+        ResponseEntity<Map> response = CallApi.callOpenAi(apiUrl, requestBody);
 
         List<Map<String, Object>> output = (List<Map<String, Object>>) response.getBody().get("output");
         List<Map<String, Object>> content = (List<Map<String, Object>>) output.get(0).get("content");
