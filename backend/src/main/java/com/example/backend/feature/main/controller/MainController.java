@@ -1,7 +1,7 @@
 package com.example.backend.feature.main.controller;
 
 import com.example.backend.feature.main.dto.ImageRequestDto;
-import com.example.backend.feature.main.service.CallApiService;
+import com.example.backend.feature.main.service.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +29,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MainController {
 
-    private final CallApiService callApiService;
+    private final MainService mainService;
 
     /**
      * <pre>
@@ -41,6 +41,7 @@ public class MainController {
      * -----------------------------------------------------------
      * 2025/08/29 오후 2:51     minki-jeon         최초 생성.
      * 2025/09/01 오후 6:14     minki-jeon         To Service
+     * 2025/09/04 오후 4:45     minki-jeon         Rename callApiService
      * </pre>
      *
      * @param request Dall-e-2 API 요청 Parameter DTO
@@ -52,7 +53,7 @@ public class MainController {
     @PostMapping("/create/dalle2")
     public ResponseEntity<Map<String, Object>> generateImage(@RequestBody ImageRequestDto request) {
         try {
-            String imageUrl = callApiService.createImageOnDallE2(request);
+            String imageUrl = mainService.createImageOnDallE2(request);
 
             // S3에 이미지 저장하고 URL 반환
             // TODO S3연동
