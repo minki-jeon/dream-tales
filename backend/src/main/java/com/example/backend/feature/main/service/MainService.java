@@ -4,8 +4,12 @@ import com.example.backend.feature.common.CallApi;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +32,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class MainService {
+
+    private final CallApi callApi;
 
     @Value("${openai.api.key}")
     private String openaiApiKey;
@@ -73,7 +79,7 @@ public class MainService {
         );
 
         // Call API openAI
-        ResponseEntity<Map> response = CallApi.callOpenAi(apiUrl, requestBody);
+        ResponseEntity<Map> response = callApi.callOpenAi(apiUrl, requestBody);
 
         // 이미지 URL 추출
         List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
@@ -115,7 +121,7 @@ public class MainService {
         );
 
         // Call API openAI
-        ResponseEntity<Map> response = CallApi.callOpenAi(apiUrl, requestBody);
+        ResponseEntity<Map> response = callApi.callOpenAi(apiUrl, requestBody);
 
         List<Map<String, Object>> output = (List<Map<String, Object>>) response.getBody().get("output");
         List<Map<String, Object>> content = (List<Map<String, Object>>) output.get(0).get("content");
