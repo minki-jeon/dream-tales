@@ -1,15 +1,12 @@
 package com.example.backend.feature.main.service;
 
 import com.example.backend.feature.common.CallApi;
+import com.example.backend.feature.common.Constants;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -48,6 +45,7 @@ public class MainService {
      * -----------------------------------------------------------
      * 2025/09/01 오후 6:14     minki-jeon         From Controller
      * 2025/09/04 오후 4:49     minki-jeon         Move to Call Api
+     * 2025/09/05 오후 5:35     minki-jeon         Constants model, apiUrl
      *
      * </pre>
      *
@@ -63,13 +61,12 @@ public class MainService {
         String translateText = translateTextToEng(inputText);
 
         // TODO RequestBodyDto
-        String model = "dall-e-2";
+        String model = Constants.MODEL_OPENAI_DALL_E_2;
         int n = 1;
         String size = "1024x1024";
 
-        // TODO apiUrl Move to Constant
         // OpenAI DALL-E API 호출
-        String apiUrl = "https://api.openai.com/v1/images/generations";
+        String apiUrl = Constants.API_URL_OPENAI_RESPONSES_IMAGES;
 
         Map<String, Object> requestBody = Map.of(
                 "model", model,
@@ -98,6 +95,7 @@ public class MainService {
      * -----------------------------------------------------------
      * 2025/09/04 오후 4:25     minki-jeon         최초 생성.
      * 2025/09/04 오후 4:49     minki-jeon         Move to Call Api
+     * 2025/09/05 오후 5:35     minki-jeon         Constants model, apiUrl
      *
      * </pre>
      *
@@ -111,9 +109,9 @@ public class MainService {
         // TODO RequestBodyDto
         String addPrompt = "내가 제공한 문장을 영어로 번역해서 제공해주세요. 번역된 문장 외에는 응답하지마세요. ";
         String prompt = addPrompt + "`" + text + "`";
-        String model = "gpt-4o-mini-2024-07-18";
+        String model = Constants.MODEL_OPENAI_GPT_4O_MINI;
 
-        String apiUrl = "https://api.openai.com/v1/responses";
+        String apiUrl = Constants.API_URL_OPENAI_RESPONSES;
 
         Map<String, Object> requestBody = Map.of(
                 "model", model,
