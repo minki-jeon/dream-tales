@@ -4,7 +4,6 @@ import com.example.backend.feature.common.CallApi;
 import com.example.backend.feature.common.Constants;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,7 @@ import java.util.Map;
  * 2025-09-01 (월)        minki-jeon       최초 생성
  * 2025-09-04 (목)        minki-jeon       Create Translate Text to English
  * 2025-09-04 (목)        minki-jeon       Rename CallApiService
+ * 2025-09-08 (월)        minki-jeon       Delete @Value ApiKey
  * </pre>
  */
 @Service
@@ -31,9 +31,6 @@ import java.util.Map;
 public class MainService {
 
     private final CallApi callApi;
-
-    @Value("${openai.api.key}")
-    private String openaiApiKey;
 
     /**
      * <pre>
