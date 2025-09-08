@@ -42,6 +42,7 @@ public class MainController {
      * 2025/08/29 오후 2:51     minki-jeon         최초 생성.
      * 2025/09/01 오후 6:14     minki-jeon         To Service
      * 2025/09/04 오후 4:45     minki-jeon         Rename callApiService
+     * 2025/09/08 오후 5:40     minki-jeon         e.getMessage()
      * </pre>
      *
      * @param request Dall-e-2 API 요청 Parameter DTO
@@ -64,7 +65,7 @@ public class MainController {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "이미지 생성 실패"));
+                    .body(Map.of("error", "이미지 생성 실패", "detail", e.getMessage()));
         }
     }
 
