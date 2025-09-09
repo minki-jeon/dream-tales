@@ -43,6 +43,7 @@ public class MainService {
      * 2025/09/01 오후 6:14     minki-jeon         From Controller
      * 2025/09/04 오후 4:49     minki-jeon         Move to Call Api
      * 2025/09/05 오후 5:35     minki-jeon         Constants model, apiUrl
+     * 2025/09/09 오전 9:51     minki-jeon         Add Image Prompt on Input-text
      *
      * </pre>
      *
@@ -55,7 +56,9 @@ public class MainService {
     public String createImageOnDallE2(ImageRequestDto request) {
         String inputText = request.getText();
         // 입력 텍스트를 영어로 번역
-        String translateText = translateTextToEng(inputText);
+        String text = Constants.PROMPT_CREATE_IMAGE_HEADER_DETAIL
+                + translateTextToEng(inputText)
+                + Constants.PROMPT_CREATE_IMAGE_OPTIMIZATION_DETAIL;
 
         // TODO RequestBodyDto
         String model = Constants.MODEL_OPENAI_DALL_E_2;
@@ -67,7 +70,7 @@ public class MainService {
 
         Map<String, Object> requestBody = Map.of(
                 "model", model,
-                "prompt", translateText,
+                "prompt", text,
                 "n", n,
                 "size", size
         );
@@ -93,6 +96,7 @@ public class MainService {
      * 2025/09/04 오후 4:25     minki-jeon         최초 생성.
      * 2025/09/04 오후 4:49     minki-jeon         Move to Call Api
      * 2025/09/05 오후 5:35     minki-jeon         Constants model, apiUrl
+     * 2025/09/09 오전 9:51     minki-jeon         Edit addPrompt
      *
      * </pre>
      *
@@ -104,8 +108,16 @@ public class MainService {
      */
     private String translateTextToEng(String text) {
         // TODO RequestBodyDto
-        String addPrompt = "내가 제공한 문장을 영어로 번역해서 제공해주세요. 번역된 문장 외에는 응답하지마세요. ";
-        String prompt = addPrompt + "`" + text + "`";
+//        String addPrompt = "내가 제공한 문장을 영어로 번역해서 제공해주세요. 번역된 문장 외에는 응답하지마세요. ";
+        /*
+        String addPrompt = """
+                내가 제공한 문장을 이미지를 얻기 위해 dall-e-2가 이해하기 쉽도록 구체적이고 적절한 프롬프트로 수정해주세요.
+                동화 그림의 이미지가 출력되도록 프롬프트에 내용을 추가해주세요.
+                dall-e-2가 이해하기 쉽도록 프롬프트를 영어로 번역해서 제공해주세요.
+                제공할 프롬프트 외에는 응답하지마세요.
+                """;
+         */
+        String prompt = "`" + text + "` " + Constants.PROMPT_TRANSLATE_INPUT;
         String model = Constants.MODEL_OPENAI_GPT_4O_MINI;
 
         String apiUrl = Constants.API_URL_OPENAI_RESPONSES;
