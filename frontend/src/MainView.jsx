@@ -52,13 +52,12 @@ export function MainView() {
     setIsGenerating(true);
 
     try {
-      const response = await axios.post("/api/create/dalle2", {
+      const response = await axios.post("/api/create/images", {
         text: inputText,
       });
       console.log(response.data);
 
       setTimeout(() => {
-        // 샘플 이미지 URL (실제로는 API 응답)
         setGeneratedImage(response.data.image_path);
         setIsGenerating(false);
 
