@@ -4,9 +4,14 @@ import com.example.backend.feature.common.CallApi;
 import com.example.backend.feature.common.Constants;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +34,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class MainService {
+
+    @Value("${local.output.path}")
+    private String localPath;
 
     private final CallApi callApi;
 
@@ -79,9 +87,31 @@ public class MainService {
         ResponseEntity<Map> response = callApi.callOpenAi(apiUrl, requestBody);
 
         // 이미지 URL 추출
-        List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
+//        List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
+//        return (String) data.get(0).get("url");
 
-        return (String) data.get(0).get("url");
+        // Base64 디코딩
+        List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
+        String base64Image = (String) data.get(0).get("b64_json");
+        byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+
+        // 파일로 저장 (Temp code)
+        // TODO AWS S3
+        File folder = new File(localPath);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        try (FileOutputStream fos = new FileOutputStream(new File(folder, "output.png"))) {
+            fos.write(imageBytes);
+            System.out.println("Image saved as output.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //img : JFrame, JLabel 등 GUI 컴포넌트에 표시
+//        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
+
+        return "/temp/output.png";
     }
 
 
