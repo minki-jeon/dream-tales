@@ -53,6 +53,7 @@ public class MainService {
      * 2025/09/05 오후 5:35     minki-jeon         Constants model, apiUrl
      * 2025/09/09 오전 9:51     minki-jeon         Add Image Prompt on Input-text
      * 2025/09/09 오후 12:36    minki-jeon         createImageOnDallE2 메소드명 변경
+     * 2025/09/09 오후 15:15    minki-jeon         API 응답 Base64 Decoding, Save Image
      *
      * </pre>
      *
