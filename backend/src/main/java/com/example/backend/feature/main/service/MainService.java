@@ -44,6 +44,7 @@ public class MainService {
      * 2025/09/04 오후 4:49     minki-jeon         Move to Call Api
      * 2025/09/05 오후 5:35     minki-jeon         Constants model, apiUrl
      * 2025/09/09 오전 9:51     minki-jeon         Add Image Prompt on Input-text
+     * 2025/09/09 오후 12:36    minki-jeon         createImageOnDallE2 메소드명 변경
      *
      * </pre>
      *
@@ -53,14 +54,14 @@ public class MainService {
      * @version 1.0
      * @since 1.0
      */
-    public String createImageOnDallE2(ImageRequestDto request) {
+    public String createImage(ImageRequestDto request) {
         String inputText = request.getText();
         // 입력 텍스트를 영어로 번역
         String text = Constants.PROMPT_CREATE_IMAGE_HEADER_DETAIL
                 + translateTextToEng(inputText)
                 + Constants.PROMPT_CREATE_IMAGE_OPTIMIZATION_DETAIL;
 
-        String model = Constants.MODEL_OPENAI_DALL_E_2;
+        String model = Constants.MODEL_OPENAI_GPT_IMAGE_1;
         int n = 1;
         String size = "1024x1024";
 
