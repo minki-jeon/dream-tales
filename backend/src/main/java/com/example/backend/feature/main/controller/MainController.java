@@ -43,6 +43,8 @@ public class MainController {
      * 2025/09/01 오후 6:14     minki-jeon         To Service
      * 2025/09/04 오후 4:45     minki-jeon         Rename callApiService
      * 2025/09/08 오후 5:40     minki-jeon         e.getMessage()
+     * 2025/09/09 오후 12:33    minki-jeon         postMapping url 변경
+     * 2025/09/09 오후 12:36    minki-jeon         createImageOnDallE2 메소드명 변경
      * </pre>
      *
      * @param request Dall-e-2 API 요청 Parameter DTO
@@ -51,10 +53,10 @@ public class MainController {
      * @version 1.0
      * @since 1.0
      */
-    @PostMapping("/create/dalle2")
+    @PostMapping("/create/images")
     public ResponseEntity<Map<String, Object>> generateImage(@RequestBody ImageRequestDto request) {
         try {
-            String imageUrl = mainService.createImageOnDallE2(request);
+            String imageUrl = mainService.createImage(request);
 
             // S3에 이미지 저장하고 URL 반환
             // TODO S3연동

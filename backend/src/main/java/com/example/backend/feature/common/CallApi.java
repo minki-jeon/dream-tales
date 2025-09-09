@@ -77,11 +77,13 @@ public class CallApi {
         apiLog.setReqHdr(headers.toString());
         apiLog.setReqDttm(requestTime);
 
+        //TODO Create ResponseDTO
         ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
 
         // response log
         // TODO Response Log 저장 로직은 분리 (Frontend의 finally에서 별도 호출)
         LocalDateTime responseTime = LocalDateTime.now();
+        apiLog.setStatCd(response.getStatusCode().value());
         apiLog.setResBody(response.getBody().toString());
         apiLog.setResHdr(response.getHeaders().toString());
         apiLog.setResDttm(responseTime);
