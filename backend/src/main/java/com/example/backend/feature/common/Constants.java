@@ -42,10 +42,8 @@ public final class Constants {
      * PROMPT
      */
     public static final String PROMPT_TRANSLATE_INPUT = """
-            내가 제공한 문장을 이미지를 얻기 위해 dall-e-2가 이해하기 쉽도록 구체적이고 적절한 프롬프트로 수정해주세요. 
-            동화 그림의 이미지가 출력되도록 프롬프트에 내용을 추가해주세요. 
-            dall-e-2가 이해하기 쉽도록 프롬프트를 영어로 번역해서 제공해주세요. 
-            제공할 프롬프트 외에는 응답하지마세요.
+            내가 제공한 문장을 영어로 번역해서 제공해주세요. 
+            번역한 문장 외에는 응답하지마세요.
             """;
     public static final String PROMPT_CREATE_IMAGE_HEADER_SHORT = "Storybook illustration of: \"";
     public static final String PROMPT_CREATE_IMAGE_HEADER_DETAIL = "Create a storybook-style illustration base on the following description: \"";
