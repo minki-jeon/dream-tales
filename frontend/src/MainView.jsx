@@ -77,32 +77,6 @@ export function MainView() {
     }
   };
 
-  // 이미지 생성 시뮬레이션 (실제 API 연동 시 교체)
-  const handleGenerateImage = async () => {
-    if (!inputText.trim()) return;
-
-    setIsGenerating(true);
-
-    // 실제 API 호출 시뮬레이션
-    setTimeout(() => {
-      // 샘플 이미지 URL (실제로는 API 응답)
-      setGeneratedImage(
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=500&fit=crop",
-      );
-      setIsGenerating(false);
-
-      // 결과 섹션으로 스크롤
-      setTimeout(() => {
-        resultRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-        // 타이핑 효과 시작
-        setTimeout(() => typeWriterEffect(inputText), 500);
-      }, 100);
-    }, 3000);
-  };
-
   // 플로팅 아이콘들
   const FloatingIcon = ({ icon: Icon, delay, size = "floating-icon" }) => (
     <div
