@@ -127,7 +127,7 @@ public class MainService {
         imageRepository.save(image);
 
         // 파일로 저장 (Temp code)
-        // TODO AWS S3
+        /*
         File folder = new File(localPath);
         if (!folder.exists()) {
             folder.mkdirs();
@@ -138,7 +138,7 @@ public class MainService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        */
         //img : JFrame, JLabel 등 GUI 컴포넌트에 표시
 //        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
 
