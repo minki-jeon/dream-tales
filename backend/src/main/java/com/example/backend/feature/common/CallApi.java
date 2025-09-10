@@ -50,6 +50,7 @@ public class CallApi {
      * 2025/09/04 오후 4:49     minki-jeon         최초 생성.
      * 2025/09/04 오후 4:49     minki-jeon         apiKey null 오류조치
      * 2025/09/08 오후 5:42     minki-jeon         Save ApiLog Data(Req, Res)
+     * 2025/09/10 오후 12:15    minki-jeon         테이블 api_log 필드 prompt 추가
      *
      * </pre>
      *
@@ -73,6 +74,8 @@ public class CallApi {
         ApiLog apiLog = new ApiLog();
         apiLog.setUrl(apiUrl);
         apiLog.setModelNm(requestBody.get("model").toString());
+        Object prompt = requestBody.get("prompt") == null ? requestBody.get("input") : requestBody.get("prompt");
+        apiLog.setPrompt(prompt.toString());
         apiLog.setReqBody(requestBody.toString());
         apiLog.setReqHdr(headers.toString());
         apiLog.setReqDttm(requestTime);
