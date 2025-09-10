@@ -28,6 +28,10 @@ public class ApiLog {
     private String modelVer;
 
     @Lob
+    @Column(name = "prompt", nullable = false)
+    private String prompt;
+
+    @Lob
     @Column(name = "req_body")
     private String reqBody;
 
