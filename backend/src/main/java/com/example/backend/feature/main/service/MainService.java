@@ -2,6 +2,9 @@ package com.example.backend.feature.main.service;
 
 import com.example.backend.feature.common.CallApi;
 import com.example.backend.feature.common.Constants;
+import com.example.backend.feature.common.Utils;
+import com.example.backend.feature.common.entity.Image;
+import com.example.backend.feature.common.repository.ImageRepository;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -29,16 +34,21 @@ import java.util.Map;
  * 2025-09-04 (목)        minki-jeon       Create Translate Text to English
  * 2025-09-04 (목)        minki-jeon       Rename CallApiService
  * 2025-09-08 (월)        minki-jeon       Delete @Value ApiKey
+ * 2025-09-10 (수)        minki-jeon       생성이미지 S3 저장, DB 기록
  * </pre>
  */
 @Service
 @RequiredArgsConstructor
 public class MainService {
 
+    private final ImageRepository imageRepository;
     @Value("${local.output.path}")
     private String localPath;
+    @Value("${image.prefix}")
+    private String imagePrefix;
 
     private final CallApi callApi;
+    private final Utils utils;
 
     /**
      * <pre>
@@ -54,6 +64,7 @@ public class MainService {
      * 2025/09/09 오전 9:51     minki-jeon         Add Image Prompt on Input-text
      * 2025/09/09 오후 12:36    minki-jeon         createImageOnDallE2 메소드명 변경
      * 2025/09/09 오후 15:15    minki-jeon         API 응답 Base64 Decoding, Save Image
+     * 2025/09/10 오후 12:15    minki-jeon         생성 이미지 s3 저장, db 기록
      *
      * </pre>
      *
@@ -96,8 +107,27 @@ public class MainService {
         String base64Image = (String) data.get(0).get("b64_json");
         byte[] imageBytes = Base64.getDecoder().decode(base64Image);
 
+        // 파일명 생성
+        String[] fileNameArr = utils.createFileName();
+        String fileName = fileNameArr[0];
+        String uuid = fileNameArr[1];
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String date = today.format(formatter);
+        String objectKey = "prj5/images/" + date + "/" + fileName;
+        // s3 업로드
+        utils.s3UploadByteImage(imageBytes, objectKey);
+
+        // db save
+        Image image = new Image();
+        image.setUuid(uuid);
+        image.setS3Key(objectKey);
+        String s3url = imagePrefix + "prj5/images/" + date + "/" + fileName;
+        image.setS3Url(s3url);
+        imageRepository.save(image);
+
         // 파일로 저장 (Temp code)
-        // TODO AWS S3
+        /*
         File folder = new File(localPath);
         if (!folder.exists()) {
             folder.mkdirs();
@@ -108,11 +138,11 @@ public class MainService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        */
         //img : JFrame, JLabel 등 GUI 컴포넌트에 표시
 //        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
 
-        return "/temp/output.png";
+        return s3url;
     }
 
 
