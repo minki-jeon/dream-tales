@@ -3,11 +3,9 @@ package com.example.backend.feature.common;
 import com.example.backend.feature.common.entity.ApiLog;
 import com.example.backend.feature.common.repository.ApiLogRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -51,6 +49,7 @@ public class CallApi {
      * 2025/09/04 오후 4:49     minki-jeon         apiKey null 오류조치
      * 2025/09/08 오후 5:42     minki-jeon         Save ApiLog Data(Req, Res)
      * 2025/09/10 오후 12:15    minki-jeon         테이블 api_log 필드 prompt 추가
+     * 2025/09/11 오후 10:11    minki-jeon         테이블 api_log - Error 기록
      *
      * </pre>
      *
@@ -81,7 +80,12 @@ public class CallApi {
         apiLog.setReqDttm(requestTime);
 
         //TODO Create ResponseDTO
-        ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
+        ResponseEntity<Map> response = null;
+        try {
+            response = restTemplate.postForEntity(apiUrl, entity, Map.class);
+        } catch (HttpStatusCodeException e) {
+            procException(e, apiLog);
+        }
 
         // response log
         // TODO Response Log 저장 로직은 분리 (Frontend의 finally에서 별도 호출)
@@ -98,5 +102,34 @@ public class CallApi {
         apiLogRepository.save(apiLog);
 
         return response;
+    }
+
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/09/11 오후 10:11
+     * description    : Error 기록
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/09/11 오후 10:11     minki-jeon         최초 생성.
+     *
+     * </pre>
+     *
+     * @param e
+     * @param apiLog
+     * @author minki-jeon
+     * @version 1.0
+     * @since 1.0
+     */
+    public void procException(HttpStatusCodeException e, ApiLog apiLog) {
+        apiLog.setStatCd(e.getStatusCode().value());
+        apiLog.setModelVer(e.getResponseHeaders().get("openai-version").toString());
+        apiLog.setResBody(e.getResponseBodyAsString());
+        apiLog.setResHdr(e.getResponseHeaders().toString());
+        apiLog.setErrMsg(e.getMessage());
+        LocalDateTime responseTime = LocalDateTime.now();
+        apiLog.setResDttm(responseTime);
+        apiLogRepository.save(apiLog);
     }
 }

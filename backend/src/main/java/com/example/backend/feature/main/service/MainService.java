@@ -11,9 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -104,6 +101,8 @@ public class MainService {
 
         // Base64 디코딩
         List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
+        /* TODO output_format */
+        String output_format = (String) response.getBody().get("output_format");
         String base64Image = (String) data.get(0).get("b64_json");
         byte[] imageBytes = Base64.getDecoder().decode(base64Image);
 
