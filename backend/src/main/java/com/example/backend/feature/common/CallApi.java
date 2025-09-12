@@ -50,6 +50,7 @@ public class CallApi {
      * 2025/09/08 오후 5:42     minki-jeon         Save ApiLog Data(Req, Res)
      * 2025/09/10 오후 12:15    minki-jeon         테이블 api_log 필드 prompt 추가
      * 2025/09/11 오후 10:11    minki-jeon         테이블 api_log - Error 기록
+     * 2025/09/12 오후 5:46     minki-jeon         테이블 api_log - usage_token 기록
      *
      * </pre>
      *
@@ -90,11 +91,15 @@ public class CallApi {
         // response log
         // TODO Response Log 저장 로직은 분리 (Frontend의 finally에서 별도 호출)
         LocalDateTime responseTime = LocalDateTime.now();
+        Map<String, Object> usageMap = (Map<String, Object>) response.getBody().get("usage");
+        int total_tokens = !usageMap.isEmpty() ? (Integer) usageMap.get("total_tokens") : null;
+
         apiLog.setStatCd(response.getStatusCode().value());
         apiLog.setResBody(response.getBody().toString());
         apiLog.setResHdr(response.getHeaders().toString());
         apiLog.setResDttm(responseTime);
         apiLog.setLatencyMs((int) ChronoUnit.NANOS.between(requestTime, responseTime));
+        apiLog.setUsageToken(total_tokens);
 
         // apiLog.setStatCd(response.getBody().get("status"));
         // apiLog.setErrMsg(response.getBody().get("error"));
