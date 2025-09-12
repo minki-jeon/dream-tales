@@ -63,6 +63,9 @@ public class ApiLog {
     @Column(name = "latency_ms")
     private Integer latencyMs;
 
+    @Column(name = "usage_token")
+    private Integer usageToken;
+
     @Column(name = "usr_id", length = 100)
     private String usrId;
 
