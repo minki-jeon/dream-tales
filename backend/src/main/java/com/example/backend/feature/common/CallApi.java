@@ -24,6 +24,7 @@ import java.util.Map;
  * -----------------------------------------------------------
  * 2025-09-04 (목)        minki-jeon       최초 생성
  * 2025-09-08 (월)        minki-jeon       ApiLog Save
+ * 2025-09-13 (토)        minki-jeon       Request/Response 기록 소스 분리
  * </pre>
  */
 @Component
@@ -51,6 +52,7 @@ public class CallApi {
      * 2025/09/10 오후 12:15    minki-jeon         테이블 api_log 필드 prompt 추가
      * 2025/09/11 오후 10:11    minki-jeon         테이블 api_log - Error 기록
      * 2025/09/12 오후 5:46     minki-jeon         테이블 api_log - usage_token 기록
+     * 2025/09/13 오후 3:11     minki-jeon         Request/Response 데이터 기록 분리
      *
      * </pre>
      *
@@ -62,25 +64,17 @@ public class CallApi {
      * @since 1.0
      */
     public ResponseEntity<Map> callOpenAi(String apiUrl, Map<String, Object> requestBody) {
+        // set header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(openaiApiKey);
 
+        // request log
+        ApiLog apiLog = setLogRequest(apiUrl, requestBody, headers);
+
+        // call api
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
         RestTemplate restTemplate = new RestTemplate();
-
-        // request log
-        LocalDateTime requestTime = LocalDateTime.now();
-        ApiLog apiLog = new ApiLog();
-        apiLog.setUrl(apiUrl);
-        apiLog.setModelNm(requestBody.get("model").toString());
-        Object prompt = requestBody.get("prompt") == null ? requestBody.get("input") : requestBody.get("prompt");
-        apiLog.setPrompt(prompt.toString());
-        apiLog.setReqBody(requestBody.toString());
-        apiLog.setReqHdr(headers.toString());
-        apiLog.setReqDttm(requestTime);
-
-        //TODO Create ResponseDTO
         ResponseEntity<Map> response = null;
         try {
             response = restTemplate.postForEntity(apiUrl, entity, Map.class);
@@ -89,7 +83,66 @@ public class CallApi {
         }
 
         // response log
-        // TODO Response Log 저장 로직은 분리 (Frontend의 finally에서 별도 호출)
+        saveLogResponse(apiLog, response);
+
+        return response;
+    }
+
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/09/13 오후 3:22
+     * description    : Request Data api_log 기록
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/09/13 오후 3:22     minki-jeon         최초 생성.
+     *
+     * </pre>
+     *
+     * @param apiUrl
+     * @param requestBody
+     * @param headers
+     * @return ApiLog
+     * @author minki-jeon
+     * @version 1.0
+     * @since 1.0
+     */
+    private ApiLog setLogRequest(String apiUrl, Map<String, Object> requestBody, HttpHeaders headers) {
+        ApiLog apiLog = new ApiLog();
+        LocalDateTime requestTime = LocalDateTime.now();
+
+        apiLog.setUrl(apiUrl);
+        apiLog.setModelNm(requestBody.get("model").toString());
+        Object prompt = requestBody.get("prompt") == null ? requestBody.get("input") : requestBody.get("prompt");
+        apiLog.setPrompt(prompt.toString());
+        apiLog.setReqBody(requestBody.toString());
+        apiLog.setReqHdr(headers.toString());
+        apiLog.setReqDttm(requestTime);
+
+        return apiLog;
+    }
+
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/09/13 오후 3:12
+     * description    : Response Data api_log 기록
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/09/13 오후 3:12     minki-jeon         최초 생성.
+     *
+     * </pre>
+     *
+     * @param apiLog
+     * @param response
+     * @author minki-jeon
+     * @version 1.0
+     * @since 1.0
+     */
+    private void saveLogResponse(ApiLog apiLog, ResponseEntity<Map> response) {
+        LocalDateTime requestTime = apiLog.getReqDttm();
         LocalDateTime responseTime = LocalDateTime.now();
         Map<String, Object> usageMap = (Map<String, Object>) response.getBody().get("usage");
         int total_tokens = !usageMap.isEmpty() ? (Integer) usageMap.get("total_tokens") : null;
@@ -101,12 +154,7 @@ public class CallApi {
         apiLog.setLatencyMs((int) ChronoUnit.NANOS.between(requestTime, responseTime));
         apiLog.setUsageToken(total_tokens);
 
-        // apiLog.setStatCd(response.getBody().get("status"));
-        // apiLog.setErrMsg(response.getBody().get("error"));
-
         apiLogRepository.save(apiLog);
-
-        return response;
     }
 
     /**
