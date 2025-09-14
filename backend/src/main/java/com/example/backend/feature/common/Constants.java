@@ -14,6 +14,7 @@ package com.example.backend.feature.common;
  * 2025-09-05 (금)        minki-jeon       Rename Constant to Constants
  * 2025-09-05 (금)        minki-jeon       Add ApiUrl, Model
  * 2025-09-09 (화)        minki-jeon       Add Optimization Image Prompt, Add Image Model
+ * 2025-09-14 (일)        minki-jeon       Add option
  * </pre>
  */
 public final class Constants {
@@ -21,6 +22,12 @@ public final class Constants {
     // 인스턴스화 방지
     private Constants() {
     }
+
+    /**
+     * ETC
+     */
+    public static final int CREATE_QUANTITY = 1;
+    public static final String IMAGE_SIZE = "1024x1024";
 
 
     /**
@@ -37,6 +44,7 @@ public final class Constants {
     public static final String MODEL_OPENAI_DALL_E_2 = "dall-e-2";
     public static final String MODEL_OPENAI_GPT_4O_MINI = "gpt-4o-mini-2024-07-18";
     public static final String MODEL_OPENAI_GPT_IMAGE_1 = "gpt-image-1";
+
 
     /**
      * PROMPT
