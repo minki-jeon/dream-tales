@@ -32,6 +32,7 @@ import java.util.Map;
  * 2025-09-04 (목)        minki-jeon       Rename CallApiService
  * 2025-09-08 (월)        minki-jeon       Delete @Value ApiKey
  * 2025-09-10 (수)        minki-jeon       생성이미지 S3 저장, DB 기록
+ * 2025-09-14 (일)        minki-jeon       s3UrlPrefix 변수명 변경
  * </pre>
  */
 @Service
@@ -41,8 +42,10 @@ public class MainService {
     private final ImageRepository imageRepository;
     @Value("${local.output.path}")
     private String localPath;
-    @Value("${image.prefix}")
-    private String imagePrefix;
+    @Value("${aws.s3.url.prefix}")
+    private String s3UrlPrefix;
+    @Value("${object.url.image}")
+    private String objectUrlImage;
 
     private final CallApi callApi;
     private final Utils utils;
@@ -62,6 +65,7 @@ public class MainService {
      * 2025/09/09 오후 12:36    minki-jeon         createImageOnDallE2 메소드명 변경
      * 2025/09/09 오후 15:15    minki-jeon         API 응답 Base64 Decoding, Save Image
      * 2025/09/10 오후 12:15    minki-jeon         생성 이미지 s3 저장, db 기록
+     * 2025/09/14 오후 1:12     minki-jeon         상수 추가 CREATE_QUANTITY, IMAGE_SIZE
      *
      * </pre>
      *
@@ -79,8 +83,8 @@ public class MainService {
                 + Constants.PROMPT_CREATE_IMAGE_OPTIMIZATION_DETAIL;
 
         String model = Constants.MODEL_OPENAI_GPT_IMAGE_1;
-        int n = 1;
-        String size = "1024x1024";
+        int n = Constants.CREATE_QUANTITY;
+        String size = Constants.IMAGE_SIZE;
 
         // OpenAI DALL-E API 호출
         String apiUrl = Constants.API_URL_OPENAI_RESPONSES_IMAGES;
@@ -113,7 +117,8 @@ public class MainService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String date = today.format(formatter);
-        String objectKey = "prj5/images/" + date + "/" + fileName;
+        String filePathName = date + "/" + fileName;
+        String objectKey = objectUrlImage + filePathName;
         // s3 업로드
         utils.s3UploadByteImage(imageBytes, objectKey);
 
@@ -121,7 +126,7 @@ public class MainService {
         Image image = new Image();
         image.setUuid(uuid);
         image.setS3Key(objectKey);
-        String s3url = imagePrefix + "prj5/images/" + date + "/" + fileName;
+        String s3url = s3UrlPrefix + objectUrlImage + filePathName;
         image.setS3Url(s3url);
         imageRepository.save(image);
 
