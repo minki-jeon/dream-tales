@@ -63,6 +63,9 @@ public class ApiLog {
     @Column(name = "latency_ms")
     private Integer latencyMs;
 
+    @Column(name = "proc_ms")
+    private Integer procMs;
+
     @Column(name = "usage_token")
     private Integer usageToken;
 

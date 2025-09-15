@@ -14,7 +14,8 @@ CREATE TABLE api_log
     err_msg     TEXT,                              -- 오류 메시지
     req_dttm    DATETIME     NOT NULL,             -- 요청 시각
     res_dttm    DATETIME,                          -- 응답 시각
-    latency_ms  INT,                               -- 응답 소요 시간 (ms)
+    latency_ms  INT,                               -- 응답 소요 시간 (ms) [backend]
+    proc_ms     INT,                               -- 실행 시간 (ms) [api_response]
     usage_token INT,                               -- 토큰 사용량 (Input+Output)
     usr_id      VARCHAR(100)                       -- 호출 사용자/세션 ID
 );

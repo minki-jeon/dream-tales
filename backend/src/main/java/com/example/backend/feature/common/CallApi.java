@@ -132,6 +132,7 @@ public class CallApi {
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
      * 2025/09/13 오후 3:12     minki-jeon         최초 생성.
+     * 2025/09/15 오후 2:05     minki-jeon         Response 실행 시간 기록
      *
      * </pre>
      *
@@ -146,12 +147,15 @@ public class CallApi {
         LocalDateTime responseTime = LocalDateTime.now();
         Map<String, Object> usageMap = (Map<String, Object>) response.getBody().get("usage");
         int total_tokens = !usageMap.isEmpty() ? (Integer) usageMap.get("total_tokens") : null;
+        HttpHeaders headers = response.getHeaders();
+        int proc_ms = !headers.get("openai-processing-ms").isEmpty() ? Integer.parseInt(headers.get("openai-processing-ms").get(0)) : null;
 
         apiLog.setStatCd(response.getStatusCode().value());
         apiLog.setResBody(response.getBody().toString());
         apiLog.setResHdr(response.getHeaders().toString());
         apiLog.setResDttm(responseTime);
         apiLog.setLatencyMs((int) ChronoUnit.NANOS.between(requestTime, responseTime));
+        apiLog.setProcMs(proc_ms);
         apiLog.setUsageToken(total_tokens);
 
         apiLogRepository.save(apiLog);
