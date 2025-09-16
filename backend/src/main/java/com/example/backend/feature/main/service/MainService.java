@@ -4,6 +4,7 @@ import com.example.backend.feature.common.CallApi;
 import com.example.backend.feature.common.Constants;
 import com.example.backend.feature.common.Utils;
 import com.example.backend.feature.common.entity.Image;
+import com.example.backend.feature.common.repository.ApiLogRepository;
 import com.example.backend.feature.common.repository.ImageRepository;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ import java.util.Map;
 public class MainService {
 
     private final ImageRepository imageRepository;
+    private final ApiLogRepository apiLogRepository;
     @Value("${local.output.path}")
     private String localPath;
     @Value("${aws.s3.url.prefix}")
@@ -190,5 +192,27 @@ public class MainService {
         String result = (String) content.get(0).get("text");
 
         return result;
+    }
+
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/09/16 오후 3:07
+     * description    : 생성 예상 시간 반환
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/09/16 오후 3:07     minki-jeon         최초 생성.
+     *
+     * </pre>
+     *
+     * @param modelName
+     * @return waitingTime
+     * @author minki-jeon
+     * @version 1.0
+     * @since 1.0
+     */
+    public Integer getWaitingTime(String modelName) {
+        return apiLogRepository.findLastProcMs(modelName);
     }
 }

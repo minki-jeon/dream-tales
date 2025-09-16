@@ -19,6 +19,7 @@ export function MainView() {
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [waitingTime, setWaitingTime] = useState(null);
   const resultRef = useRef(null);
 
   // 초기 로딩 애니메이션 제어
@@ -46,10 +47,25 @@ export function MainView() {
     }, 50);
   };
 
+  const getWatingTime = async () => {
+    try {
+      const result = await axios.get("/api/create/waiting_time", {
+        params: { model: "gpt-image-1" },
+      });
+      console.log(result.data);
+      setWaitingTime(result.data.waitingTime);
+    } catch (err) {
+      console.log("[Error] watingTime() : ", err);
+    }
+  };
+
   // 이미지 생성 (backend에서 api 연동)
   const handleCreateImageClickBtn = async () => {
     if (!inputText.trim()) return;
     setIsGenerating(true);
+
+    // 출력 예상 시간
+    getWatingTime();
 
     try {
       const response = await axios.post("/api/create/images", {
@@ -232,6 +248,11 @@ export function MainView() {
                               </div>
                               <p className="text-white fs-4 mt-4">
                                 AI가 당신의 이야기를 그림으로 그리고 있어요...
+                              </p>
+                              <p className="text-white fs-4 mt-4">
+                                {waitingTime
+                                  ? "예상 시간 : " + waitingTime + " 초"
+                                  : ""}
                               </p>
                             </div>
                           </div>
