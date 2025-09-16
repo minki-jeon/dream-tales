@@ -4,10 +4,7 @@ import com.example.backend.feature.main.dto.ImageRequestDto;
 import com.example.backend.feature.main.service.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -65,5 +62,28 @@ public class MainController {
         }
     }
 
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/09/16 오후 3:01
+     * description    : 생성 예상 시간 반환
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/09/16 오후 3:01     minki-jeon         최초 생성.
+     *
+     * </pre>
+     *
+     * @param model
+     * @return axios promise
+     * @author minki-jeon
+     * @version 1.0
+     * @since 1.0
+     */
+    @GetMapping("/create/waiting_time")
+    public ResponseEntity<Map<String, Object>> waitingTime(@RequestParam String model) {
+        int waitingTime = mainService.getWaitingTime(model) / 1000;
+        return ResponseEntity.ok(Map.of("waitingTime", waitingTime));
+    }
 
 }

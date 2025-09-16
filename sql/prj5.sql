@@ -20,6 +20,13 @@ CREATE TABLE api_log
     usr_id      VARCHAR(100)                       -- 호출 사용자/세션 ID
 );
 
+select proc_ms
+from api_log
+where model_nm = 'gpt-image-1'
+order by seq desc
+LIMIT 1;
+
+
 # image
 CREATE TABLE image
 (
