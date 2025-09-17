@@ -2,6 +2,9 @@ package com.example.backend.feature.common;
 
 import com.example.backend.feature.common.entity.ApiLog;
 import com.example.backend.feature.common.repository.ApiLogRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -170,6 +173,7 @@ public class CallApi {
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
      * 2025/09/11 오후 10:11     minki-jeon         최초 생성.
+     * 2025/09/17 오전 9:50      minki-jeon         오류 내용 기록
      *
      * </pre>
      *
@@ -180,13 +184,27 @@ public class CallApi {
      * @since 1.0
      */
     public void procException(HttpStatusCodeException e, ApiLog apiLog) {
+        String errMsg;
+//      String code = null;
+        String responseBody = e.getResponseBodyAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = null;
+        try {
+            root = mapper.readTree(responseBody);
+        } catch (JsonProcessingException ex) {
+            throw new RuntimeException(ex);
+        }
+        errMsg = root.path("error").path("message").asText();
+//      code = root.path("error").path("code").asText();
+
         apiLog.setStatCd(e.getStatusCode().value());
         apiLog.setModelVer(e.getResponseHeaders().get("openai-version").toString());
         apiLog.setResBody(e.getResponseBodyAsString());
         apiLog.setResHdr(e.getResponseHeaders().toString());
-        apiLog.setErrMsg(e.getMessage());
+        apiLog.setErrMsg(errMsg);
         LocalDateTime responseTime = LocalDateTime.now();
         apiLog.setResDttm(responseTime);
         apiLogRepository.save(apiLog);
+        throw e;
     }
 }
