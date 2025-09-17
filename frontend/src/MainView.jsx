@@ -89,6 +89,14 @@ export function MainView() {
       }, 3000);
     } catch (err) {
       console.log("[Error] handleCreateImageClickBtn() : ", err);
+      if (
+        confirm(
+          "오류가 발생되었습니다. 새로 고침하려면 확인 버튼을 눌러주세요. \n 오류 : " +
+            err.response.data.detail,
+        )
+      ) {
+        location.reload();
+      }
     }
   };
 
