@@ -459,6 +459,28 @@
     transform: scale(1.02);
 }
 
+.story-type-select {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem !important;
+    color: white;
+    font-size: 1.1rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.story-type-select:focus {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 0.25rem rgba(255, 105, 180, 0.25);
+    color: white;
+}
+
+.story-type-select option {
+    background: rgba(75, 0, 130, 0.9);
+    color: white;
+}
+
 .story-input {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -552,6 +574,237 @@
     transform: scale(1.05);
 }
 
+/* 4컷 동화책 스타일 */
+.storybook-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.book-wrapper {
+    position: relative;
+    perspective: 1200px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.book {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    transform-style: preserve-3d;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.book.flipped {
+    transform: rotateY(-15deg);
+}
+
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 249, 250, 0.95) 100%);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    backface-visibility: hidden;
+    transform-origin: left center;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 3px solid rgba(139, 69, 19, 0.3);
+}
+
+.cover-page {
+    z-index: 4;
+    background: linear-gradient(135deg,
+    rgba(139, 69, 19, 0.9) 0%,
+    rgba(160, 82, 45, 0.9) 50%,
+    rgba(139, 69, 19, 0.9) 100%);
+    color: white;
+}
+
+.story-page {
+    z-index: 3;
+    opacity: 0;
+    transform: rotateY(-180deg);
+}
+
+.story-page.active {
+    opacity: 1;
+    transform: rotateY(0deg);
+    z-index: 5;
+}
+
+.page-content {
+    padding: 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.book-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.book-title .title-icon {
+    width: 4rem;
+    height: 4rem;
+    color: #ffd700;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+.book-title h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.title-decoration {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.decoration-icon {
+    width: 2rem;
+    height: 2rem;
+    animation: sparkleFloat 2s ease-in-out infinite;
+}
+
+.decoration-icon:nth-child(1) {
+    animation-delay: 0s;
+    color: #ffd700;
+}
+
+.decoration-icon:nth-child(2) {
+    animation-delay: 0.5s;
+    color: #ff69b4;
+}
+
+.decoration-icon:nth-child(3) {
+    animation-delay: 1s;
+    color: #9370db;
+}
+
+.page-number {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(45deg, #ff69b4, #9370db);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 8px rgba(255, 105, 180, 0.3);
+}
+
+.story-image-container {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+}
+
+.story-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.story-image:hover {
+    transform: scale(1.05);
+}
+
+.story-caption {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 책 컨트롤 */
+.book-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.page-nav-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page-nav-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: #ff69b4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+}
+
+.page-nav-btn:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+}
+
+.page-indicator {
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .story-text-card {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
@@ -625,6 +878,28 @@
     .fairy-tale-app {
         background-attachment: scroll;
     }
+
+    .book {
+        height: 400px;
+    }
+
+    .book-title h3 {
+        font-size: 2rem;
+    }
+
+    .story-image-container {
+        height: 250px;
+    }
+
+    .book-controls {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .page-indicator {
+        order: -1;
+    }
 }
 
 @media (max-width: 576px) {
@@ -635,5 +910,26 @@
     .generate-btn {
         font-size: 1rem;
         padding: 0.8rem 1.5rem;
+    }
+
+    .book {
+        height: 350px;
+    }
+
+    .page-content {
+        padding: 1rem;
+    }
+
+    .story-image-container {
+        height: 200px;
+    }
+
+    .story-caption {
+        font-size: 1.2rem;
+    }
+
+    .page-nav-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
     }
 }
