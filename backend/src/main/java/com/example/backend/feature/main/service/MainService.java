@@ -6,6 +6,7 @@ import com.example.backend.feature.common.Utils;
 import com.example.backend.feature.common.entity.Image;
 import com.example.backend.feature.common.repository.ApiLogRepository;
 import com.example.backend.feature.common.repository.ImageRepository;
+import com.example.backend.feature.main.dto.FourPanelRequestDto;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,6 +69,7 @@ public class MainService {
      * 2025/09/09 오후 15:15    minki-jeon         API 응답 Base64 Decoding, Save Image
      * 2025/09/10 오후 12:15    minki-jeon         생성 이미지 s3 저장, db 기록
      * 2025/09/14 오후 1:12     minki-jeon         상수 추가 CREATE_QUANTITY, IMAGE_SIZE
+     * 2025/09/22 오전 11:27    minki-jeon         번역할 텍스트 -> 프롬프트 형식
      *
      * </pre>
      *
@@ -80,15 +82,16 @@ public class MainService {
     public String createImage(ImageRequestDto request) {
         String inputText = request.getText();
         // 입력 텍스트를 영어로 번역
+        String prompt = "`" + inputText + "` " + Constants.PROMPT_TRANSLATE_INPUT;
         String text = Constants.PROMPT_CREATE_IMAGE_HEADER_DETAIL
-                + translateTextToEng(inputText)
+                + translateTextToEng(prompt, null)
                 + Constants.PROMPT_CREATE_IMAGE_OPTIMIZATION_DETAIL;
 
         String model = Constants.MODEL_OPENAI_GPT_IMAGE_1;
         int n = Constants.CREATE_QUANTITY;
         String size = Constants.IMAGE_SIZE;
 
-        // OpenAI DALL-E API 호출
+        // OpenAI Image Model API 호출
         String apiUrl = Constants.API_URL_OPENAI_RESPONSES_IMAGES;
 
         Map<String, Object> requestBody = Map.of(
@@ -100,10 +103,6 @@ public class MainService {
 
         // Call API openAI
         ResponseEntity<Map> response = callApi.callOpenAi(apiUrl, requestBody);
-
-        // 이미지 URL 추출
-//        List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
-//        return (String) data.get(0).get("url");
 
         // Base64 디코딩
         List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
@@ -132,22 +131,6 @@ public class MainService {
         image.setS3Url(s3url);
         imageRepository.save(image);
 
-        // 파일로 저장 (Temp code)
-        /*
-        File folder = new File(localPath);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-        try (FileOutputStream fos = new FileOutputStream(new File(folder, "output.png"))) {
-            fos.write(imageBytes);
-            System.out.println("Image saved as output.png");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-        //img : JFrame, JLabel 등 GUI 컴포넌트에 표시
-//        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
-
         return s3url;
     }
 
@@ -164,18 +147,19 @@ public class MainService {
      * 2025/09/04 오후 4:49     minki-jeon         Move to Call Api
      * 2025/09/05 오후 5:35     minki-jeon         Constants model, apiUrl
      * 2025/09/09 오전 9:51     minki-jeon         Edit addPrompt
+     * 2025/09/22 오전 11:25    minki-jeon         parameter model 추가, text -> prompt
      *
      * </pre>
      *
-     * @param text 사용자로부터 입력받은 텍스트
+     * @param prompt 사용자로부터 입력받은 텍스트를 결합한 프롬프트
+     * @param model  호출 모델
      * @return 번역된 텍스트
      * @author minki-jeon
      * @version 1.0
      * @since 1.0
      */
-    private String translateTextToEng(String text) {
-        String prompt = "`" + text + "` " + Constants.PROMPT_TRANSLATE_INPUT;
-        String model = Constants.MODEL_OPENAI_GPT_4O_MINI;
+    private String translateTextToEng(String prompt, String model) {
+        model = (model == null) ? Constants.MODEL_OPENAI_GPT_4O_MINI : model;
 
         String apiUrl = Constants.API_URL_OPENAI_RESPONSES;
 
@@ -214,5 +198,89 @@ public class MainService {
      */
     public Integer getWaitingTime(String modelName) {
         return apiLogRepository.findLastProcMs(modelName);
+    }
+
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/09/22 오전 11:03
+     * description    :
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/09/22 오전 11:03     minki-jeon         최초 생성.
+     *
+     * </pre>
+     *
+     * @param request
+     * @return
+     * @author
+     * @version 1.0
+     * @since
+     */
+    public String[] createFourPanelImage(FourPanelRequestDto request) {
+        String startScene = request.getStartScene();
+        String endScene = request.getEndScene();
+        // 입력 텍스트들을 동화 이미지에 맞는 4개 문장으로 생성, 영어로 번역
+        String prompt = Constants.PROMPT_TRANSLATE_INPUT_2
+                + " `" + startScene + "`, "
+                + " `" + endScene + "`";
+        String resultTexts = translateTextToEng(prompt, Constants.MODEL_OPENAI_GPT_4O);
+        String[] results = resultTexts.split("\\|\\|\\|");
+
+        String[] paths = new String[results.length];
+        for (int i = 0; i < results.length; i++) {
+            String text = Constants.PROMPT_CREATE_IMAGE_HEADER_DETAIL
+                    + results[i]
+                    + Constants.PROMPT_CREATE_IMAGE_OPTIMIZATION_DETAIL;
+
+            String model = Constants.MODEL_OPENAI_GPT_IMAGE_1;
+            int n = Constants.CREATE_QUANTITY;
+            String size = Constants.IMAGE_SIZE;
+
+            // OpenAI Image Model API 호출
+            String apiUrl = Constants.API_URL_OPENAI_RESPONSES_IMAGES;
+
+            Map<String, Object> requestBody = Map.of(
+                    "model", model,
+                    "prompt", text,
+                    "n", n,
+                    "size", size
+            );
+
+            // Call API openAI
+            ResponseEntity<Map> response = callApi.callOpenAi(apiUrl, requestBody);
+
+            // Base64 디코딩
+            List<Map<String, Object>> data = (List<Map<String, Object>>) response.getBody().get("data");
+            /* TODO output_format */
+            String output_format = (String) response.getBody().get("output_format");
+            String base64Image = (String) data.get(0).get("b64_json");
+            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+
+            // 파일명 생성
+            String[] fileNameArr = utils.createFileName();
+            String fileName = fileNameArr[0];
+            String uuid = fileNameArr[1];
+            LocalDate today = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            String date = today.format(formatter);
+            String filePathName = date + "/" + fileName;
+            String objectKey = objectUrlImage + filePathName;
+            // s3 업로드
+            utils.s3UploadByteImage(imageBytes, objectKey);
+
+            // db save
+            Image image = new Image();
+            image.setUuid(uuid);
+            image.setS3Key(objectKey);
+            String s3url = s3UrlPrefix + objectUrlImage + filePathName;
+            image.setS3Url(s3url);
+            imageRepository.save(image);
+
+            paths[i] = s3url;
+        }
+
+        return paths;
     }
 }
