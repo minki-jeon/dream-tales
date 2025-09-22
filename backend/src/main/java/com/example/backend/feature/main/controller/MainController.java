@@ -1,5 +1,6 @@
 package com.example.backend.feature.main.controller;
 
+import com.example.backend.feature.main.dto.FourPanelRequestDto;
 import com.example.backend.feature.main.dto.ImageRequestDto;
 import com.example.backend.feature.main.service.MainService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -35,7 +36,7 @@ public class MainController {
      * <pre>
      * author         : minki-jeon
      * date           : 2025/08/29 오후 2:51
-     * description    : dall-e-2 모델 이미지 생성
+     * description    : 단일 이미지 생성
      * ===========================================================
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
@@ -49,7 +50,7 @@ public class MainController {
      * 2025/09/17 오전 10:50    minki-jeon         오류 view 전달
      * </pre>
      *
-     * @param request Dall-e-2 API 요청 Parameter DTO
+     * @param request 이미지 생성 API 요청 Parameter DTO
      * @return axios promise
      * @author minki-jeon
      * @version 1.0
@@ -76,6 +77,47 @@ public class MainController {
 
         }
     }
+
+    /**
+     * <pre>
+     * author         : minki-jeon
+     * date           : 2025/09/22 오전 11:00
+     * description    : 4컷 동화 이미지 생성
+     * ===========================================================
+     * DATE                     AUTHOR             NOTE
+     * -----------------------------------------------------------
+     * 2025/09/22 오전 11:00     minki-jeon         최초 생성.
+     *
+     * </pre>
+     *
+     * @param request 이미지 4개 생성 API 요청 Parameter DTO
+     * @return axios promise
+     * @author minki-jeon
+     * @version 1.0
+     * @since 1.0
+     */
+    @PostMapping("/create/four-panel-story")
+    public ResponseEntity<Map<String, Object>> generateFourPanelImage(@RequestBody FourPanelRequestDto request) {
+        try {
+            String[] imagePaths = mainService.createFourPanelImage(request);
+            return ResponseEntity.ok(Map.of("image_paths", imagePaths));
+        } catch (HttpStatusCodeException e) {
+            try {
+                // TODO Exception 처리 함수 생성
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode root = mapper.readTree(e.getResponseBodyAsString());
+                String errMsg = root.path("error").path("message").asText();
+                return ResponseEntity.status(e.getStatusCode())
+                        .body(Map.of("error", "이미지 생성 실패", "detail", errMsg));
+            } catch (Exception ex) {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("error", "예외 처리 중 오류 발생", "detail", ex.getMessage()));
+            }
+
+        }
+    }
+
 
     /**
      * <pre>
