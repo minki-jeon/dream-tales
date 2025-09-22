@@ -43,15 +43,19 @@ public final class Constants {
      */
     public static final String MODEL_OPENAI_DALL_E_2 = "dall-e-2";
     public static final String MODEL_OPENAI_GPT_4O_MINI = "gpt-4o-mini-2024-07-18";
+    public static final String MODEL_OPENAI_GPT_4O = "chatgpt-4o-latest";
     public static final String MODEL_OPENAI_GPT_IMAGE_1 = "gpt-image-1";
 
 
     /**
      * PROMPT
      */
-    public static final String PROMPT_TRANSLATE_INPUT = """
-            내가 제공한 문장을 영어로 번역해서 제공해주세요. 
-            번역한 문장 외에는 응답하지마세요.
+    public static final String PROMPT_TRANSLATE_INPUT = "문장만 영어로 번역하라. 번역한 문장 외에는 응답하지말라.";
+    public static final String PROMPT_CREATE_FOUR_PANEL_TEXT = """
+            gpt-image-1로 4장면 동화를 만든다.
+            첫·마지막 장면 문장을 줄 테니, 이를 이어 2·3번째 장면을 자연스럽게 생성하라.
+            4문장 파이프 3개(|||)로 구분해라.
+            그 외에는 응답하지말라.
             """;
     public static final String PROMPT_CREATE_IMAGE_HEADER_SHORT = "Storybook illustration of: \"";
     public static final String PROMPT_CREATE_IMAGE_HEADER_DETAIL = "Create a storybook-style illustration base on the following description: \"";
