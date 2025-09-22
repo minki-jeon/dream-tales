@@ -51,11 +51,11 @@ public final class Constants {
      * PROMPT
      */
     public static final String PROMPT_TRANSLATE_INPUT = "문장만 영어로 번역하라. 번역한 문장 외에는 응답하지말라.";
-    public static final String PROMPT_TRANSLATE_INPUT_2 = """
+    public static final String PROMPT_CREATE_FOUR_PANEL_TEXT = """
             gpt-image-1로 4장면 동화를 만든다.
             첫·마지막 장면 문장을 줄 테니, 이를 이어 2·3번째 장면을 자연스럽게 생성하라.
-            4문장을 번역하고 파이프 3개(|||)로 구분해라.
-            번역한 문장 외에는 응답하지말라.
+            4문장 파이프 3개(|||)로 구분해라.
+            그 외에는 응답하지말라.
             """;
     public static final String PROMPT_CREATE_IMAGE_HEADER_SHORT = "Storybook illustration of: \"";
     public static final String PROMPT_CREATE_IMAGE_HEADER_DETAIL = "Create a storybook-style illustration base on the following description: \"";
