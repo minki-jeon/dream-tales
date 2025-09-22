@@ -53,6 +53,12 @@ public final class Constants {
             내가 제공한 문장을 영어로 번역해서 제공해주세요. 
             번역한 문장 외에는 응답하지마세요.
             """;
+    public static final String PROMPT_TRANSLATE_INPUT_2 = """
+            openai의 gpt-image-1 모델을 사용하여 4개의 장면 동화를 만드려고 해. 
+            첫번째와 마지막 이미지에 해당하는 문장 2개를 제공할게. 
+            제공한 문장을 참고하여 2번째와 3번째에 생성할 이미지에 해당하는 문장을 자연스럽게 이어지도록 문장을 생성해줘. 
+            그리고 제공한 문장 2개와 생성한 문장 2개는 모델 gpt-image-1에서 이해하기 쉽도록 번역해주고 곧바로 프롬프트로 전달되도록 문장만 제공해주는데 각 문장을 split이 편하도록 문장 사이에 구분자 ,(쉼표)를 추가해줘.
+            """;
     public static final String PROMPT_CREATE_IMAGE_HEADER_SHORT = "Storybook illustration of: \"";
     public static final String PROMPT_CREATE_IMAGE_HEADER_DETAIL = "Create a storybook-style illustration base on the following description: \"";
     public static final String PROMPT_CREATE_IMAGE_OPTIMIZATION_SHORT = """
