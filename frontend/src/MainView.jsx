@@ -115,6 +115,7 @@ export function MainView() {
       setTimeout(() => {
         setGeneratedImage(response.data.image_path);
         setIsGenerating(false);
+        console.log("예상시간: " + waitingTime + ", 진행시간: " + runningTime);
         stopTimer();
         scrollToResult();
         setTimeout(() => typeWriterEffect(inputText), 500);
@@ -144,6 +145,7 @@ export function MainView() {
         setGeneratedTexts(response.data.create_texts);
         setCurrentPage(0);
         setIsGenerating(false);
+        console.log("예상시간: " + waitingTime + ", 진행시간: " + runningTime);
         stopTimer();
         scrollToResult();
         setTimeout(
