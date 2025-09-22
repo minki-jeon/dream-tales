@@ -87,6 +87,7 @@ public class MainController {
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
      * 2025/09/22 오전 11:00     minki-jeon         최초 생성.
+     * 2025/09/22 오전 14:13     minki-jeon         생성된 문장 4개 view 전달.
      *
      * </pre>
      *
@@ -99,8 +100,9 @@ public class MainController {
     @PostMapping("/create/four-panel-story")
     public ResponseEntity<Map<String, Object>> generateFourPanelImage(@RequestBody FourPanelRequestDto request) {
         try {
-            String[] imagePaths = mainService.createFourPanelImage(request);
-            return ResponseEntity.ok(Map.of("image_paths", imagePaths));
+            Map<String, Object> result = mainService.createFourPanelImage(request);
+            return ResponseEntity.ok(Map.of("image_paths", result.get("imagePaths"),
+                    "create_texts", result.get("createTexts")));
         } catch (HttpStatusCodeException e) {
             try {
                 // TODO Exception 처리 함수 생성

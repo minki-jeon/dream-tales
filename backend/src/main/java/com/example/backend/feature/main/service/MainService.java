@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public class MainService {
      * <pre>
      * author         : minki-jeon
      * date           : 2025/09/01 오후 6:14
-     * description    : dall-e-2 모델 이미지 생성
+     * description    : 이미지 생성
      * ===========================================================
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
@@ -84,7 +85,7 @@ public class MainService {
         // 입력 텍스트를 영어로 번역
         String prompt = "`" + inputText + "` " + Constants.PROMPT_TRANSLATE_INPUT;
         String text = Constants.PROMPT_CREATE_IMAGE_HEADER_DETAIL
-                + translateTextToEng(prompt, null)
+                + callText2TextAgent(prompt, null)
                 + Constants.PROMPT_CREATE_IMAGE_OPTIMIZATION_DETAIL;
 
         String model = Constants.MODEL_OPENAI_GPT_IMAGE_1;
@@ -153,12 +154,12 @@ public class MainService {
      *
      * @param prompt 사용자로부터 입력받은 텍스트를 결합한 프롬프트
      * @param model  호출 모델
-     * @return 번역된 텍스트
+     * @return 응답받은 텍스트
      * @author minki-jeon
      * @version 1.0
      * @since 1.0
      */
-    private String translateTextToEng(String prompt, String model) {
+    private String callText2TextAgent(String prompt, String model) {
         model = (model == null) ? Constants.MODEL_OPENAI_GPT_4O_MINI : model;
 
         String apiUrl = Constants.API_URL_OPENAI_RESPONSES;
@@ -204,34 +205,42 @@ public class MainService {
      * <pre>
      * author         : minki-jeon
      * date           : 2025/09/22 오전 11:03
-     * description    :
+     * description    : 4컷 동화 이미지 생성
      * ===========================================================
      * DATE                     AUTHOR             NOTE
      * -----------------------------------------------------------
      * 2025/09/22 오전 11:03     minki-jeon         최초 생성.
+     * 2025/09/22 오전 14:13     minki-jeon         문장 생성, 번역 프롬프트 분리 + 생성된 문장 전달 (Map타입 반환).
      *
      * </pre>
      *
      * @param request
-     * @return
-     * @author
+     * @return 생성된 이미지 경로 4개, 생성된 문장 4개
+     * @author minki-jeon
      * @version 1.0
-     * @since
+     * @since 1.0
      */
-    public String[] createFourPanelImage(FourPanelRequestDto request) {
+    public Map<String, Object> createFourPanelImage(FourPanelRequestDto request) {
+        Map<String, Object> result = new HashMap<String, Object>();
         String startScene = request.getStartScene();
         String endScene = request.getEndScene();
-        // 입력 텍스트들을 동화 이미지에 맞는 4개 문장으로 생성, 영어로 번역
-        String prompt = Constants.PROMPT_TRANSLATE_INPUT_2
+        // 입력 텍스트들을 문장 생성 동화 이미지에 맞는 4개 문장으로 생성
+        String createTextPrompt = Constants.PROMPT_CREATE_FOUR_PANEL_TEXT
                 + " `" + startScene + "`, "
                 + " `" + endScene + "`";
-        String resultTexts = translateTextToEng(prompt, Constants.MODEL_OPENAI_GPT_4O);
-        String[] results = resultTexts.split("\\|\\|\\|");
+        String createTexts = callText2TextAgent(createTextPrompt, Constants.MODEL_OPENAI_GPT_4O);
+        String[] createTextArr = createTexts.split("\\|\\|\\|");
+        result.put("createTexts", createTextArr);
 
-        String[] paths = new String[results.length];
-        for (int i = 0; i < results.length; i++) {
+        // 영문으로 번역
+        String translatePrompt = "`" + createTexts + "` " + Constants.PROMPT_TRANSLATE_INPUT;
+        String translateTexts = callText2TextAgent(translatePrompt, null);
+        String[] translateTextArr = translateTexts.split("\\|\\|\\|");
+
+        String[] paths = new String[translateTextArr.length];
+        for (int i = 0; i < translateTextArr.length; i++) {
             String text = Constants.PROMPT_CREATE_IMAGE_HEADER_DETAIL
-                    + results[i]
+                    + translateTextArr[i]
                     + Constants.PROMPT_CREATE_IMAGE_OPTIMIZATION_DETAIL;
 
             String model = Constants.MODEL_OPENAI_GPT_IMAGE_1;
@@ -281,6 +290,8 @@ public class MainService {
             paths[i] = s3url;
         }
 
-        return paths;
+        result.put("imagePaths", paths);
+
+        return result;
     }
 }
