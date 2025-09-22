@@ -141,7 +141,7 @@ public class MainController {
      */
     @GetMapping("/create/waiting_time")
     public ResponseEntity<Map<String, Object>> waitingTime(@RequestParam String model) {
-        int waitingTime = mainService.getWaitingTime(model) / 1000;
+        int waitingTime = (int) (mainService.getWaitingTime(model) * 1.275) / 1000;
         return ResponseEntity.ok(Map.of("waitingTime", waitingTime));
     }
 
