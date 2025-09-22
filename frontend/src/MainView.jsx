@@ -29,12 +29,15 @@ export function MainView() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [generatedImages, setGeneratedImages] = useState([]); // 4컷용
+  const [generatedTexts, setGeneratedTexts] = useState([]); // 4컷 생성 문장
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [waitingTime, setWaitingTime] = useState(null);
+  const [waitingTime, setWaitingTime] = useState(null); // 예상 시간 (초)
+  const [runningTime, setRunningTime] = useState(0); // 진행 시간 (초)
   const [currentPage, setCurrentPage] = useState(0); // 책 페이지 인덱스
   const resultRef = useRef(null);
+  const timerRef = useRef(null); // 타이머 참조
 
   // 초기 로딩 애니메이션 제어
   useEffect(() => {
@@ -43,6 +46,27 @@ export function MainView() {
     }, 3000); // 3초 후 메인 화면 표시
 
     return () => clearTimeout(timer);
+  }, []);
+
+  // 타이머 시작 함수
+  const startTimer = () => {
+    setRunningTime(0);
+    timerRef.current = setInterval(() => {
+      setRunningTime((prev) => prev + 1);
+    }, 1000);
+  };
+
+  // 타이머 중지 함수
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => stopTimer();
   }, []);
 
   // 타이핑 애니메이션 효과
@@ -61,13 +85,13 @@ export function MainView() {
     }, 50);
   };
 
-  const getWatingTime = async () => {
+  const getWatingTime = async (n) => {
     try {
       const result = await axios.get("/api/create/waiting_time", {
         params: { model: "gpt-image-1" },
       });
       console.log(result.data);
-      setWaitingTime(result.data.waitingTime);
+      setWaitingTime(result.data.waitingTime * n * 1.3 + 5);
     } catch (err) {
       console.log("[Error] watingTime() : ", err);
     }
@@ -79,7 +103,8 @@ export function MainView() {
     setIsGenerating(true);
 
     // 출력 예상 시간
-    getWatingTime();
+    getWatingTime(1);
+    startTimer();
 
     try {
       const response = await axios.post("/api/create/images", {
@@ -90,10 +115,12 @@ export function MainView() {
       setTimeout(() => {
         setGeneratedImage(response.data.image_path);
         setIsGenerating(false);
+        stopTimer();
         scrollToResult();
         setTimeout(() => typeWriterEffect(inputText), 500);
       }, 3000);
     } catch (err) {
+      stopTimer();
       handleApiError(err);
     }
   };
@@ -102,7 +129,8 @@ export function MainView() {
   const handleCreateFourPanelStory = async () => {
     if (!startSceneText.trim() || !endSceneText.trim()) return;
     setIsGenerating(true);
-    getWatingTime();
+    getWatingTime(4);
+    startTimer();
 
     try {
       const response = await axios.post("/api/create/four-panel-story", {
@@ -113,21 +141,26 @@ export function MainView() {
 
       setTimeout(() => {
         setGeneratedImages(response.data.image_paths); // 4개의 이미지 URL 배열
+        setGeneratedTexts(response.data.create_texts);
         setCurrentPage(0);
         setIsGenerating(false);
+        stopTimer();
         scrollToResult();
         setTimeout(
-          () => typeWriterEffect(`${startSceneText} ... ${endSceneText}`),
+          () => typeWriterEffect(`${startSceneText} ➡️ ${endSceneText}`),
           500,
         );
       }, 3000);
     } catch (err) {
+      stopTimer();
       handleApiError(err);
     }
   };
 
   const handleApiError = (err) => {
     console.log("[Error] API call failed: ", err);
+    setIsGenerating(false);
+    stopTimer(); // 오류 시 타이머 중지
     if (
       confirm(
         "오류가 발생되었습니다. 새로 고침하려면 확인 버튼을 눌러주세요. \n 오류 : " +
@@ -136,7 +169,6 @@ export function MainView() {
     ) {
       location.reload();
     }
-    setIsGenerating(false);
   };
 
   const scrollToResult = () => {
@@ -150,7 +182,7 @@ export function MainView() {
 
   // 책 페이지 넘기기
   const nextPage = () => {
-    if (currentPage < generatedImages.length - 1) {
+    if (currentPage < generatedImages.length) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -165,11 +197,15 @@ export function MainView() {
   const resetAll = () => {
     setGeneratedImage(null);
     setGeneratedImages([]);
+    setGeneratedTexts([]);
     setDisplayText("");
     setInputText("");
     setStartSceneText("");
     setEndSceneText("");
     setCurrentPage(0);
+    setRunningTime(0); // 진행 시간 초기화
+    setWaitingTime(null); // 예상 시간 초기화
+    stopTimer(); // 타이머 중지
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -409,11 +445,55 @@ export function MainView() {
                               <p className="text-white fs-4 mt-4">
                                 AI가 당신의 이야기를 그림으로 그리고 있어요...
                               </p>
-                              <p className="text-white fs-4 mt-4">
-                                {waitingTime
-                                  ? `예상 시간 : ${waitingTime} 초`
-                                  : ""}
-                              </p>
+
+                              {/* 시간 정보 박스 */}
+                              <div className="time-info-container mt-4">
+                                <div className="time-info-box">
+                                  {waitingTime && (
+                                    <div className="time-item expected-time">
+                                      <span className="time-label">
+                                        예상 시간
+                                      </span>
+                                      <span className="time-value">
+                                        {waitingTime}초
+                                      </span>
+                                    </div>
+                                  )}
+                                  <div className="time-item running-time">
+                                    <span className="time-label">
+                                      진행 시간
+                                    </span>
+                                    <span className="time-value">
+                                      {runningTime}초
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* 진행률 바 (선택적) */}
+                                {waitingTime && (
+                                  <div className="progress-bar-container mt-3">
+                                    <div className="progress-bar">
+                                      <div
+                                        className="progress-fill"
+                                        style={{
+                                          width: `${Math.min((runningTime / waitingTime) * 100, 100)}%`,
+                                        }}
+                                      ></div>
+                                    </div>
+                                    {/*
+                                    <small className="progress-text">
+                                      {Math.min(
+                                        Math.round(
+                                          (runningTime / waitingTime) * 100,
+                                        ),
+                                        100,
+                                      )}
+                                      % 완료
+                                    </small>
+                                    */}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ) : (
@@ -473,10 +553,7 @@ export function MainView() {
                                             />
                                           </div>
                                           <div className="story-caption">
-                                            {index === 0 && "시작..."}
-                                            {index === 1 && "그리고..."}
-                                            {index === 2 && "하지만..."}
-                                            {index === 3 && "마침내..."}
+                                            {generatedTexts[index]}
                                           </div>
                                         </div>
                                       </div>
@@ -521,7 +598,7 @@ export function MainView() {
                             <Card className="story-text-card mb-4">
                               <Card.Body>
                                 <p className="text-white fs-4 text-center mb-0 fw-medium">
-                                  "{displayText}"
+                                  {displayText}
                                   {isTyping && (
                                     <span className="typing-cursor">|</span>
                                   )}
