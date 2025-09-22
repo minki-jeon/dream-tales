@@ -91,7 +91,7 @@ export function MainView() {
         params: { model: "gpt-image-1" },
       });
       console.log(result.data);
-      setWaitingTime(result.data.waitingTime * n * 1.3 + 5);
+      setWaitingTime(result.data.waitingTime * n + 5);
     } catch (err) {
       console.log("[Error] watingTime() : ", err);
     }
@@ -298,18 +298,68 @@ export function MainView() {
                     <Card.Body className="p-4">
                       {/* 동화 유형 선택 */}
                       <Form.Group className="mb-4">
-                        <Form.Label className="text-white fs-5 fw-medium d-flex align-items-center gap-2">
+                        <Form.Label className="text-white fs-5 fw-medium d-flex align-items-center gap-2 mb-3">
                           <Book className="text-warning" />
                           동화 유형 선택
                         </Form.Label>
-                        <Form.Select
-                          value={storyType}
-                          onChange={(e) => setStoryType(e.target.value)}
-                          className="story-type-select"
-                        >
-                          <option value="single">단일 이미지 동화</option>
-                          <option value="four-panel">4컷 동화만들기</option>
-                        </Form.Select>
+                        <div className="story-type-radio-group">
+                          <div className="radio-option">
+                            <Form.Check
+                              type="radio"
+                              id="single-story"
+                              name="storyType"
+                              value="single"
+                              checked={storyType === "single"}
+                              onChange={(e) => setStoryType(e.target.value)}
+                              className="custom-radio"
+                            />
+                            <label
+                              htmlFor="single-story"
+                              className="radio-label"
+                            >
+                              <div className="radio-content">
+                                <Sparkles className="radio-icon" />
+                                <div className="radio-text">
+                                  <span className="radio-title">
+                                    한 컷 동화 만들기
+                                  </span>
+                                  <span className="radio-description">
+                                    한 장면으로 완성되는 동화
+                                  </span>
+                                </div>
+                              </div>
+                            </label>
+                          </div>
+
+                          <div className="radio-option">
+                            <Form.Check
+                              type="radio"
+                              id="four-panel-story"
+                              name="storyType"
+                              value="four-panel"
+                              checked={storyType === "four-panel"}
+                              onChange={(e) => setStoryType(e.target.value)}
+                              className="custom-radio"
+                            />
+                            <label
+                              htmlFor="four-panel-story"
+                              className="radio-label"
+                            >
+                              <div className="radio-content">
+                                <Book className="radio-icon" />
+                                <div className="radio-text">
+                                  <span className="radio-title">
+                                    4 컷 동화 만들기
+                                  </span>
+                                  <span className="radio-description">
+                                    시작과 끝으로 만드는 네 개의 장면 동화
+                                    스토리
+                                  </span>
+                                </div>
+                              </div>
+                            </label>
+                          </div>
+                        </div>
                       </Form.Group>
 
                       {/* 단일 이미지 입력 */}
@@ -406,10 +456,10 @@ export function MainView() {
                           </>
                         ) : (
                           <>
-                            <Wand2 className="me-2" />✨{" "}
+                            <Wand2 className="me-2" />✨
                             {storyType === "single"
                               ? "그림 만들기"
-                              : "4컷 동화 만들기"}{" "}
+                              : "4컷 동화 만들기"}
                             ✨
                           </>
                         )}
