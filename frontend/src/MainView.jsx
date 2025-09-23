@@ -358,7 +358,7 @@ export function MainView() {
                                 <Book className="radio-icon" />
                                 <div className="radio-text">
                                   <span className="radio-title">
-                                    4 컷 동화 만들기
+                                    네 컷 동화 만들기
                                   </span>
                                   <span className="radio-description">
                                     시작과 끝으로 만드는 네 개의 장면 동화
