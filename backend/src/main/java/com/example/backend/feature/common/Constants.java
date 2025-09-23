@@ -50,7 +50,12 @@ public final class Constants {
     /**
      * PROMPT
      */
-    public static final String PROMPT_TRANSLATE_INPUT = "문장만 영어로 번역하라. 번역한 문장 외에는 응답하지말라.";
+    public static final String PROMPT_TRANSLATE_INPUT = """
+            제공한 문장을 영어로 번역하라.
+            문장 사이에 구분자 ||| 가 있을 경우 반드시 그대로 유지하고, 번역된 문장만 대체하라.
+            구분자를 삭제·추가·변경하지 마라.
+            번역 외엔 응답하지 마라.
+            """;
     public static final String PROMPT_CREATE_FOUR_PANEL_TEXT = """
             gpt-image-1로 4장면 동화를 만든다.
             첫·마지막 장면 문장을 줄 테니, 이를 이어 2·3번째 장면을 자연스럽게 생성하라.
