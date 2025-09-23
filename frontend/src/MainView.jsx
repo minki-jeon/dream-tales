@@ -91,7 +91,7 @@ export function MainView() {
         params: { model: "gpt-image-1" },
       });
 
-      setWaitingTime(result.data.waitingTime * n + 5);
+      setWaitingTime(result.data.waitingTime * n);
     } catch (err) {
       console.log("[Error] watingTime() : ", err);
     }
