@@ -33,7 +33,7 @@ export function MainView() {
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [waitingTime, setWaitingTime] = useState(null); // 예상 시간 (초)
+  const [waitingTime, setWaitingTime] = useState(0); // 예상 시간 (초)
   const [runningTime, setRunningTime] = useState(0); // 진행 시간 (초)
   const [currentPage, setCurrentPage] = useState(0); // 책 페이지 인덱스
   const resultRef = useRef(null);
@@ -90,7 +90,7 @@ export function MainView() {
       const result = await axios.get("/api/create/waiting_time", {
         params: { model: "gpt-image-1" },
       });
-      console.log(result.data);
+
       setWaitingTime(result.data.waitingTime * n + 5);
     } catch (err) {
       console.log("[Error] watingTime() : ", err);
@@ -105,6 +105,7 @@ export function MainView() {
     // 출력 예상 시간
     getWatingTime(1);
     startTimer();
+    scrollToResult();
 
     try {
       const response = await axios.post("/api/create/images", {
@@ -115,7 +116,6 @@ export function MainView() {
       setTimeout(() => {
         setGeneratedImage(response.data.image_path);
         setIsGenerating(false);
-        console.log("예상시간: " + waitingTime + ", 진행시간: " + runningTime);
         stopTimer();
         scrollToResult();
         setTimeout(() => typeWriterEffect(inputText), 500);
@@ -132,6 +132,7 @@ export function MainView() {
     setIsGenerating(true);
     getWatingTime(4);
     startTimer();
+    scrollToResult();
 
     try {
       const response = await axios.post("/api/create/four-panel-story", {
@@ -145,7 +146,6 @@ export function MainView() {
         setGeneratedTexts(response.data.create_texts);
         setCurrentPage(0);
         setIsGenerating(false);
-        console.log("예상시간: " + waitingTime + ", 진행시간: " + runningTime);
         stopTimer();
         scrollToResult();
         setTimeout(
@@ -206,7 +206,7 @@ export function MainView() {
     setEndSceneText("");
     setCurrentPage(0);
     setRunningTime(0); // 진행 시간 초기화
-    setWaitingTime(null); // 예상 시간 초기화
+    setWaitingTime(0); // 예상 시간 초기화
     stopTimer(); // 타이머 중지
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -224,6 +224,13 @@ export function MainView() {
       <Icon />
     </div>
   );
+
+  function formattingTime(time) {
+    if (time < 60) return time;
+    const minutes = Math.floor(time / 60);
+    const second = time % 60;
+    return `${minutes}분 ${second}`;
+  }
 
   return (
     <>
@@ -351,7 +358,7 @@ export function MainView() {
                                 <Book className="radio-icon" />
                                 <div className="radio-text">
                                   <span className="radio-title">
-                                    4 컷 동화 만들기
+                                    네 컷 동화 만들기
                                   </span>
                                   <span className="radio-description">
                                     시작과 끝으로 만드는 네 개의 장면 동화
@@ -507,7 +514,7 @@ export function MainView() {
                                         예상 시간
                                       </span>
                                       <span className="time-value">
-                                        {waitingTime}초
+                                        {formattingTime(waitingTime)}초
                                       </span>
                                     </div>
                                   )}
@@ -516,7 +523,7 @@ export function MainView() {
                                       진행 시간
                                     </span>
                                     <span className="time-value">
-                                      {runningTime}초
+                                      {formattingTime(runningTime)}초
                                     </span>
                                   </div>
                                 </div>
