@@ -349,7 +349,13 @@ npm run build
 
 ## 📄 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE.md) 파일을 참조하세요.
+
+## 📢 OpenAI 모델 사용 안내
+
+이 프로젝트는 OpenAI의 GPT 계열 모델(GPT-4o, GPT-4o-mini)과 GPT-Image-1 모델을 활용합니다.  
+모델 사용은 [OpenAI Terms of Service](https://openai.com/policies/terms-of-use)
+와 [Usage Policies](https://platform.openai.com/docs/usage-policies)를 준수합니다.
 
 ## 👥 개발자
 
