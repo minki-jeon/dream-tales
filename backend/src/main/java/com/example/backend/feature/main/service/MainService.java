@@ -44,8 +44,6 @@ public class MainService {
 
     private final ImageRepository imageRepository;
     private final ApiLogRepository apiLogRepository;
-    @Value("${local.output.path}")
-    private String localPath;
     @Value("${aws.s3.url.prefix}")
     private String s3UrlPrefix;
     @Value("${object.url.image}")
