@@ -39,7 +39,7 @@ jobs:
         working-directory: ./backend
         run: |
           chmod +x gradlew
-          ./gradlew test --info
+          ./gradlew test
           ./gradlew bootJar
 
       # deploy to ec2
