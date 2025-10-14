@@ -34,11 +34,12 @@ jobs:
           echo "${{secrets.PRIVATE_PEM}}" > backend/src/main/resources/secret/private.pem
           echo "${{secrets.PUBLIC_PEM}}" > backend/src/main/resources/secret/public.pem
 
-      # BACKEND BUILD
+      # BACKEND BUILD & TEST
       - name: build spring boot app
         working-directory: ./backend
         run: |
           chmod +x gradlew
+          ./gradlew test --debug
           ./gradlew bootJar
 
       # deploy to ec2
