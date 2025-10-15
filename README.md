@@ -365,3 +365,6 @@ npm run build
 ## 📞 문의
 
 프로젝트에 대한 문의사항이 있으시면 [Issues](https://github.com/minki-jeon/dream-tales/issues) 탭을 통해 문의해주세요.
+
+---
+**⚠️ 주의사항**: 본 프로젝트는 포트폴리오 목적으로 제작되었으며, 상업적 용도로 사용되지 않습니다.
