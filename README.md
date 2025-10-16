@@ -55,7 +55,7 @@
 
 ## 📸 스크린샷
 
-![dream-tales.dev_preview.gif](https://github.com/user-attachments/assets/9cb9a61a-b3b5-482f-a9f7-7eb8f1338290)
+![dream-tales.dev_preview.gif](frontend/public/dream-tales.dev_preview_upload.gif)
 
 ## 🛠️ 기술 스택
 
