@@ -53,6 +53,10 @@
 - 실시간 진행 시간 카운터
 - 진행률 표시바 제공
 
+## 📸 스크린샷
+
+![dream-tales.dev_preview.gif](https://github.com/user-attachments/assets/9cb9a61a-b3b5-482f-a9f7-7eb8f1338290)
+
 ## 🛠️ 기술 스택
 
 ### Frontend
